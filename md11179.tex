@@ -1,0 +1,135 @@
+\documentclass{article}
+
+
+\usepackage{listings}
+\usepackage{csquotes}
+\usepackage{color}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{oz}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\newtheorem{definition}{Definition}
+
+ \usepackage{listings}
+ \usepackage{courier}
+ \lstset{
+         basicstyle=\footnotesize\ttfamily, % Standardschrift
+         %numbers=left,               % Ort der Zeilennummern
+         numberstyle=\tiny,          % Stil der Zeilennummern
+         %stepnumber=2,               % Abstand zwischen den Zeilennummern
+         numbersep=5pt,              % Abstand der Nummern zum Text
+         tabsize=2,                  % Groesse von Tabs
+         extendedchars=true,         %
+         breaklines=true,            % Zeilen werden Umgebrochen
+         keywordstyle=\color{red},
+    		frame=b,         
+ %        keywordstyle=[1]\textbf,    % Stil der Keywords
+ %        keywordstyle=[2]\textbf,    %
+ %        keywordstyle=[3]\textbf,    %
+ %        keywordstyle=[4]\textbf,   \sqrt{\sqrt{}} %
+         stringstyle=\color{white}\ttfamily, % Farbe der String
+         showspaces=false,           % Leerzeichen anzeigen ?
+         showtabs=false,             % Tabs anzeigen ?
+         xleftmargin=17pt,
+         framexleftmargin=17pt,
+         framexrightmargin=5pt,
+         framexbottommargin=4pt,
+         %backgroundcolor=\color{lightgray},
+         showstringspaces=false      % Leerzeichen in Strings anzeigen ?        
+ }
+ \lstloadlanguages{
+         Java
+ }
+%\DeclareCaptionFont{blue}{\color{blue}} 
+
+ %\captionsetup[lstlisting]{singlelinecheck=false, labelfont={blue}, textfont={blue}}
+ % \usepackage{caption}
+ 
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox[cmyk]{0.43, 0.35, 0.35,0.01}{\parbox{\textwidth}{\hspace{15pt}#1#2#3}}}
+ % \captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white, singlelinecheck=false, margin=0pt, font={bf,footnotesize}}
+
+
+
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white, singlelinecheck=false, margin=0pt, font={bf,footnotesize}}
+
+
+
+\begin{document} 
+
+\bgroup \parindent 0pt
+{\Large\textbf{ISO11179 with MDE}}
+
+\vskip 4mm 
+
+{\Large {David Milward}}
+
+\egroup
+
+\vskip 14mm
+
+\noindent
+
+\section{Overview of ISO11179}
+
+ISO11179 is the ISO standard for metadata registries. Metadata registries are used in many organisations to carry out a number of functions, nearly all of them are related to the need to ensure that data is used consistently within an organization.  The need for such a toolkit has become apparent in the last 10 years or so as the amount of data available to organizations has exploded, and despite the existence of an international standard metadata registries are implemented in a variety of different ways. In this paper we look at the intentions of the standard, and since there is no reference implementation of the standard we attempt to build an ISO11179 metadata registry using model driven engineering principles. During this process we examine the strengths and weaknesses of the standard and highlight areas in which the standard can be strengthened, made more user-friendly, adaptable and workable within an enterprise architectural framework. 
+
+
+\subsection{ISO11179 - Purpose}
+
+The ISO11179 Standard for metadata registries defines its purpose[REF]as follows,
+\newline
+to promote:
+\begin{itemize}
+\item Standard description of data
+\item Common understanding of data across organizational elements and between organizations
+\item Re-use and standardization of data over time, space, and applications
+\item Harmonization and standardization of data within an organization and across organizations
+\item Management of the components of data
+\item Re-use of the components of data.
+\end{itemize}
+
+Interoperability isn't specifically mentioned, however these six items are very close to being a description of interoperability for data and data components. There is no other international standards which tackle the issues of interoperability, although there are a number of accepted ``'maturity models' which target interoperability (REF). These are similar in structure, address similar issues, but diverge slightly on implementation routes. The MDI model framework which emerged from the Athena and Interop NoE (REF) research projects have made progress in defining ways of implementing interoperability using model driven engineering concepts and ideas. Since ISO11179 is currently in use in both the Healthcare and Defence sectors it seems sensible to see if we can apply model driven interoperability concepts to implement the main features detailed in ISO11179, especially since no reference implementation of the standard is provided.
+
+\section{Key Design Issues}
+\subsection{Use Cases}
+
+\section{Lemma}
+
+\section{XText/EMF Implementation}
+
+
+ 
+ 
+ 
+\section{Misc}
+
+Most metadata registries are build around the concepts outlined in ISO11179, however there was a previous set of standards proposed about 10 years ago by the OASIS \cite{ebXML} group around the ebXML standard. This focused on the ability to register and store XML Schemas and XML documents, and whilst it represented a useful step in the handling of metadata, it only concerned itself with storing documents rather than data elements and components. 
+
+Over the last ten years more organizations have begun to implement metadata registries of one sort or another, normally to aid the interoperability of data between different component organisations. Wikipedia lists the following  organizations as having public metadata registries:
+
+\begin{itemize}
+\item Agency for Healthcare Research and Quality- United States Health Information Knowledgebase \cite{AgHealth}
+\item Apelon Medical Registry []
+\item Australian Institute of Health and Welfare []
+\item Dublin Core Metadata Registry []
+\item Knowledge Network for Biocomplexity []
+\item Cancer Data Standards Repository []
+\item Global Justice XML Data Model (GJXDM) []
+\item Minnesota Department of Education Metadata Registry (K-12 Data)[]
+\item National Information Exchange Model []
+\item NIST ebXML Registry for HL7 / HIMSS / IHE []
+\item Open Metadata Registry (formerly the National Science Digital Library (NSDL) Metadata Registry) []
+\item US Department of Defense Metadata Registry (requires sponsored registration) []
+\item US Environmental Protection Agency - Environmental Data Registry []
+\end{itemize}
+
+
+\newpage
+
+\bibliographystyle{plain}
+
+\bibliography{md11179}
+
+
+\end{document}  
