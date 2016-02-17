@@ -183,24 +183,63 @@ Metadata items are constrained by a set of rules which are described as follows:
 The standard continues to provide a detailed account of how metadata items are related within the metadata registry, for the purposes of brevity we will not repeat them all here, but we may refer back to specific parts of the standard where required.
 
 
-\section{Domain Specific Modelling Language}
+\section{A DSML for ISO11179}
 
-In order to look at the standard from a modelling perspective we need to see how the current normative description and UML diagrams fit into a MBE architecture. Figure~\ref{fig:mbe1} shows the standard view of abstractions from an MBE viewpoint:
+In order to look at the ISO11179 standard from a modelling perspective we need to see how the current normative description and UML diagrams, which make up the ISO11179 model, fit into a MBE architecture. Figure~\ref{fig:mbe1} shows the standard view of abstractions from an MBE viewpoint:
 
 \begin{figure}[h]
-\includegraphics[width=0.8\textwidth,natwidth=610,natheight=642]{Models1}
+\includegraphics[width=1.0\textwidth,natwidth=610,natheight=642]{Models1}
 \caption{Abstraction Layers in Model Based Engineering} 
 \label{fig:mbe1}
 \end{figure}
 
+In FIgure~\ref{fig:mbe1}  we can see that UML itself sits at what is refered to as the M2 level in this architecture model. Each abstraction layer is defined so that the level \emph{below} can be seen as being an implementation of that layer; in this way the UML model is an implementation of the UML language, which in turn is am implementation of the MOF meta-meta-language which resides at the M3 layer. It is possible to use UML to define meta-models at the M2 level, and this is what is being done here by using UML and text to describe the ISO11179 Model in ISO11179-3. 
 
+The model description in the ISO11179 also defines aspects of the implementation, and no particular regard has been made to differentiating between aspects of the MDR itself, and the groups of metadata which it is holding. In reference to Figure~\ref{fig:mbe1} it is not clear which items belong at M2 and which at M1levels. This makes it quite difficult to implement since it is not always clear from the standard which diagrams pertain to implementation details and which pertain to the core model. In parts of the standard implementation details are deliberately avoided, and in orthers they are clearly indicated. For instance is it necessary to instantiate a class of \emph{Value Domain} objects within the registry, or is it sufficient to represent this aspect of a data element using other properties of a data element.
 
-
-
-
+We have taken the appoach that if we can define the M2 layer, then building the M1 will be straightforward using standard model based engineering techniques. This approach still leaves the implementation details as details which can be adjusted for any particular environment, we can use different code generators on different platforms to generate different implementations of a metadata registry, but still keeping to the original standard.
 
 
 \subsection{Language Definition}
+
+The metamodel given is informed by experience with Healthcare information systems \cite{DSMCR} and by the development of an open source Metadata Registry built around similar principles. The reason for designing this DSML  is that we seek a meta-language to be able handle hetrogeneous metadata stored using a variety of languages. It needs to be able to capture metadata, in particular a detailed description the data is stored in relational databases, XML Schemas, XML files based on XML Schemas, Excel files and object-oriented programs. It then needs to be able to automatically transform the data into a number of simple formats. To do this each dataset at an M1 level needs to be described at the M2 level, by doing this we can build a container which can hold the metadata collected at the M1 level.
+
+The core entities in the metamodel are as follows:
+\begin{itemize}
+\item DataModel
+\item DataClass
+\item DataItem
+\item DataType
+\item DataConstraint
+\end{itemize}
+
+\begin{figure}[h]
+\includegraphics[width=1.0\textwidth,natwidth=610,natheight=642]{LemmaCore1}
+\caption{Core Metamodel (Lemma)} 
+\label{fig:lemma}
+\end{figure}
+
+This metamodel forms a language in its own right which is able to describe the structure of data, it doesn't deal with behaviour so there are no operations in this language, however using the mechanisms inherent in the EMF stack we can define rules which will enable transformations to be defined between LEMMA and for instance a forms metamodel, this is covered inthe next section.
+
+The language is a language of \emph{metadata} and it will normally sit within the context of a metadata registry or similar server artefact. The core entity in our new model is the \emph{CatalogueElement} which is in effect an abstract entities from which most of the other entities derive, it handles the versioning control through the use of a GUID, which has the added benfit of turning metadata into \emph{linked metadata} automatically. The CatalogueElement together with the \emph{Relationship} entity is able to define relationships between any of its sub-entities. The Tag class allows any vocabulary or ontology element to be associated with any catalogue element. This we will see later on will enable the import of standard ontologies into a metadata registry built around this metamodel.
+
+\subsubsection{DataModel}
+A DataModel is versioning and grouping mechanism for one data-set, it might for instance be a particular database, or a particular XSD Schema which is used in a particular domain, however it allows us to group and version a related set of DataClasses. A DataModel can contain many DataElements, and many DataTypes. A DataModel contains one or more DataItems, which may be implemented as DataClasses, DataElements, DataTypes or EnumerationValues. As all DataItems are also AbstractItems, they can have Tags, which link them to entities outside that DataModel using URI's, and they can have Relationships which are two-way associations with other AbstractItems. DataConstraints are attached to each DataModel and are applicable within that DataModel.
+
+\subsubsection{DataClass}
+ A DataClass is a mechanism for grouping DataItems, which are atomic pieces of data. A concept may be represented by a class, but the DataItem is the atomic component of that class, it can't be reduced into any smaller component. A DataClass can be used as a DataItem, in that it can be contained within another DataClass, and so it can be used to provide multi-level grouping within a DataModel. A DataClass can \emph{extend} another DataClass, this \emph{inheritance} mechanism is very straightforward, it allows the child class to have all the member DataItems and DataClasses that are present in the parent. These DataItems and DataClasses are in effect references, so that if the parent class changes then these \emph{inherited} DataItems and DataClasses will be changed as well.
+ 
+ \subsubsection{DataElement}
+ A DataElement is the smallest data entity described in this langauge, it has a direct one to one relationship with a DataType, since every DataElement will have a corresponding DataType. 
+ 
+ \subsubsection{DataType}
+ A DataType is a basic type or value representation for a particular DataItem, it represents the kind of unit of the DataItem, for instance for it could be a set of values defined by a enumerations, or it could be a number represented by an integer or double DataType. The notion of DataType here is very similar to that which prevails in the Computer Science world and is defined by Pierce  ~\cite{Pierce} as follows:
+\textbf{A type system is a tractable synthetic method for proving the absence of certain program behaviours by classifying phrases according to the kinds of values they compute}. 
+
+
+
+
+
 
 \subsection{Semantics}
 
