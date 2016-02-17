@@ -47,7 +47,9 @@
 \DeclareCaptionFont{white}{\color{white}}
 \DeclareCaptionFormat{listing}{\colorbox[cmyk]{0.43, 0.35, 0.35,0.01}{\parbox{\textwidth}{\hspace{15pt}#1#2#3}}}
  % \captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white, singlelinecheck=false, margin=0pt, font={bf,footnotesize}}
-
+ 
+    \graphicspath{{figs/}}
+ 
 
 
 \captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white, singlelinecheck=false, margin=0pt, font={bf,footnotesize}}
@@ -104,7 +106,7 @@ Interoperability isn't specifically mentioned, however these six items are very 
 The standard data description in ISO11179 is given in section1.6.1 where the idea of a data element is introduced, and with it the idea that it is composed of two parts, its conceptual part and its representational part. This section further puts forward the notion that a data element concept can be composed of two parts, an object class and a property. An object class is said to correspond with a class (in OO terms) or an entity(in ER terms). This is further illustrated with the illustration copied below in figure~\ref{fig:DEC}:
 
 \begin{figure}[h]
-\includegraphics[width=0.6\textwidth,natwidth=610,natheight=642]{figs/DataElementConcept}
+\includegraphics[width=0.6\textwidth,natwidth=610,natheight=642]{DataElementConcept}
 \caption{Data Elements and Data Element Concepts} 
 \label{fig:DEC}
 \end{figure}
@@ -155,10 +157,48 @@ Here the standard has changed in that the last iteration of the standard has cha
 
 As with the previous discussion we fail to see any direct way in which the standard supports this avowed purpose except indirectly. There is no real definition on what is being referred to by descriptions of data, except in the discussions over what is metadata, when it appears that metadata is defined as being ``'descriptions of data'. This being the case it begs the question of why this purpose is using the terminology \emph{descriptions of data} instead of \emph{metadata}. 
 
+\subsection{Design of an ISO11179 Metadata Registry}
 
+ISO11179-3 has a detailed account of the registry metamodel and its attributes, and sets out to be relevent to application designers, system architects, and software developers. It uses UML 2.4.1 as a modelling language to describe the main features of a conformant metadata registry, although the standard itself is quite clear in not endorsing any particular environment, database management system, database design paradigm, system development methodology, data definition language, command language, system interface, user interface, computing platform or technology required for implementation. However in ISO11179-3.5 a metamodel is used to describe the information model of a metadata registry, and again the standard is clear that this should not limit the actual implementation technology used. The UML description is split into a number of packages:
+\begin{itemize}
+\item Basic Package
+\item Identification Metamodel
+\item Designation and Definition Metamodel
+\item Registration Package
+\item Concepts Package (Concepts and Classification regions)
+\item Binary Relations Package
+\item Data Descriptions Package
+\end{itemize}
+Metadata items are constrained by a set of rules which are described as follows:
+\begin{itemize}
+\item Rule 1 : A metadata item is  \emph{identified} if has one or more identification associations each with a \emph{Scoped\_Identifier} class.
+\item Rule 2 : A metadata item is  \emph{designated} if it has one or more item\_designation associations each with a \emph{Designation} class
+\item Rule 3 : A metadata item is \emph{defined} if it has one or more item\_definition associations each with a \emph{Definition} class
+\item Rule 4 : A metadata item is \emph{classified} if it has one or more Classification association classes, each with a concept class in a Concept\_System.
+\item Rule 5 : A metadata item is  \emph{registered} if it has one or more \emph{submission} associations, each with a Submission\_record class.
+\item Rule 6 :  A metadata item is  \emph{administered} if it has exactly one stewardship association with a Stewardship\_Record class - only applies where rule 7 does not apply
+\item Rule 7 : A metadata item is \emph{attached} if it has exactly one attachment association with an Administered\_Item class - can only apply in cases where rule 6 does not.
+\end{itemize}
+
+The standard continues to provide a detailed account of how metadata items are related within the metadata registry, for the purposes of brevity we will not repeat them all here, but we may refer back to specific parts of the standard where required.
 
 
 \section{Domain Specific Modelling Language}
+
+In order to look at the standard from a modelling perspective we need to see how the current normative description and UML diagrams fit into a MBE architecture. Figure~\ref{fig:mbe1} shows the standard view of abstractions from an MBE viewpoint:
+
+\begin{figure}[h]
+\includegraphics[width=0.6\textwidth,natwidth=610,natheight=642]{MBE1}
+\caption{Abstraction Layers in Model Based Engineering} 
+\label{fig:mbe1}
+\end{figure}
+
+
+
+
+
+
+
 
 \subsection{Language Definition}
 
