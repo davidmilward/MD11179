@@ -83,7 +83,7 @@ ISO11179 is the ISO standard for metadata registries. Metadata registries are us
 
 \subsection{The Purpose of ISO11179}
 
-The ISO11179 Standard for metadata registries defines its purpose[REF]as follows,
+The ISO11179 Standard for metadata registries defines its purpose (ISO11179-1 section 0.2 General description of ISO/IEC 11179)as follows,
 \newline
 to promote:
 \begin{itemize}
@@ -91,13 +91,14 @@ to promote:
 \item Common understanding of data across organizational elements and between organizations
 \item Re-use and standardization of data over time, space, and applications
 \item Harmonization and standardization of data within an organization and across organizations
-\item Management of the components of data
-\item Re-use of the components of data.
+\item Management of the components \emph{of descriptions} of data
+\item Re-use of the components \emph{of descriptions} of data.
 \end{itemize}
 
-Interoperability isn't specifically mentioned, however these six items are very close to being a description of interoperability for data and data components. There is no other international standards which tackle the issues of interoperability, although there are a number of accepted ``'maturity models' which target interoperability (REF). These are similar in structure, address similar issues, but diverge slightly on implementation routes. The MDI model framework which emerged from the Athena and Interop NoE (REF) research projects have made progress in defining ways of implementing interoperability using model driven engineering concepts and ideas. Since ISO11179 is currently in use in both the Healthcare and Defence sectors it seems sensible to see if we can apply model driven interoperability concepts to implement the main features detailed in ISO11179, especially since no reference implementation of the standard is provided. It is also a chance to explore how these six use-cases are implemented by the standard and where such implementation is augmented by the use of Model Based Engineering techniques. These core ISO11179 use cases are examined in the next few paragraphs.
+Interoperability isn't specifically mentioned, however these six items are very close to being a description of framework for interoperability for data and data components through the use of \emph{metadata}. There is no other international standards which tackle the issues of interoperability, although there are a number of accepted ``'maturity models' which target interoperability (REF) within the enterprise. These are similar in structure, address similar issues, but diverge slightly on implementation routes. The MDI model framework which emerged from the Athena and Interop NoE (REF) research projects have made progress in defining ways of implementing interoperability using model driven engineering concepts and ideas, and since ISO11179 is currently in use in both the Healthcare and Defence sectors we examine the core purposes of the standard to try and determine how we it achieves these purposes. We implement an ISO11179 conformant metadata registry using Model Based Engineering principles, and examine how use of these principles have helped achieved the purposes of ISO11179. 
 
- 
+****I would like to do the comparison with a strictly conformant MDR such as Aristotle**************
+
 \subsubsection{Standard Data Description}
 
 The standard data description in ISO11179 is given in section1.6.1 where the idea of a data element is introduced, and with it the idea that it is composed of two parts, its conceptual part and its representational part. This section further puts forward the notion that a data element concept can be composed of two parts, an object class and a property. An object class is said to correspond with a class (in OO terms) or an entity(in ER terms). This is further illustrated with the illustration copied below in figure~\ref{fig:DEC}:
@@ -139,18 +140,20 @@ Use of these guidelines will of course help with the development of a common und
 
 \subsubsection{Re-use and Standardization of Data over time, space and applications}
 
-According to section 5 Standardization involves standardizing the descriptive data itself: characteristics, property values of characteristics, selection of signifiers, and the meaning of values.  It can occur at a variety of levels: agency, national , regional, or international. Governance is further applied by accredited standards organizations, who may well have their own standardization processes.
+According to section 5 Standardization involves standardizing the descriptive data itself: characteristics, property values of characteristics, selection of signifiers, and the meaning of values.  It can occur at a variety of levels: agency, national , regional, or international. Governance is further applied by accredited standards organizations, who may well have their own standardization processes. ISO11179-5 details key aspects of naming which should be part of any naming system for data items contained in a registry, and lists a number of criteria which a conforming registry should adhere to. It doesn't prescribe any particular naming system, but rather the key qualities that a naming system should have, and which a registry should document. Part 6 details the organizational requirements for running and administering a metadata registry, however it doesn't specify how re-use or standardization of data over time, space and applications will be enhanced by using an ISO11179 conformant metadata registry. By applying a naming convention to metadata, and by enforcing a rigorous application of that naming convention we can standardise data, however there are no clear practical indications of how this is to be done in the standard.
 
 
 \subsubsection{Harmonization and Standardization of data}
 
+This is very similar to the purpose of the previous purpose, and again apart from the notes made previously it is difficult to see how the standard itself will further the harmonization of data, apart from the idea of having a uniquely agreed and administered naming and versioning system for data.
 
-\subsubsection{Management of Data Components}
+\subsubsection{Management of the components \emph{of descriptions} of data}
 
+Here the standard has changed in that the last iteration of the standard has changed the purpose from \emph'{Management of the components of data} to \emph'{Management of the components of descriptions of data}. Most computer scientists would read this as being a change from the idea of \emph{object} to \emph{class}, since an object can be seen as being a component of data, and a class as being a component of a description of data. We consider the term \emph{metadata components} or \emph{models} to be more fitting. Although the management of data components or metadata components is talked about within the standard, it is very often in the terms of the meta-model behind the standard, ideas such as \emph{arranging semantic components with a naming convention} (ISO11179-5.p6) are discussed, but with almost no reference to actual details of what a semantic component is, whether it is referring to combination of a data element and data element concept or an object running in an object oriented programming language. In our view the management models or metadata components is not really addressed by the standard, and it really needs to be.
 
-\subsubsection{Re-use of Data Components}
+\subsubsection{Re-use of the components of descriptions of data}
 
-
+As with the previous discussion we fail to see any direct way in which the standard supports this avowed purpose except indirectly. There is no real definition on what is being referred to by descriptions of data, except in the discussions over what is metadata, when it appears that metadata is defined as being ``'descriptions of data'. This being the case it begs the question of why this purpose is using the terminology \emph{descriptions of data} instead of \emph{metadata}. 
 
 
 
