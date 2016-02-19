@@ -90,7 +90,7 @@ Model Based Engineering or Model Driven Engineering is the software engineering 
 
 The overall architecture is often broken down by considering abstraction layers, which are illustrated in Figure~\ref{fig:mbe1}
 \begin{figure}[h]
-\includegraphics[width=1.0\textwidth,natwidth=610,natheight=642]{Models1}
+\includegraphics[width=0.8\textwidth,natwidth=610,natheight=642]{Models1}
 \caption{Abstraction Layers in Model Based Engineering} 
 \label{fig:mbe1}
 \end{figure}
@@ -99,7 +99,7 @@ We can see that UML itself sits at what is refered to as the M2 level in this ar
 When one builds a model for a system using MBE the model is normally at the same level of abstraction as the program.  So one would expect that a model which is built to represent an artefact, say a conference registration system to be built at level M!, and one would also expect there to be a direct one-to-one relationship between the model and the program itself. A Java or C\# program therefore would sit at the M1 level, and would be related directly to a model existing at that level.
 
 \subsubsection{Domain Specific Languages}
-Sometime the term \emph{Domain Specific Language(DSL)} is used to talk about a language which has been built purely to be used within one narrow domain of usage. An example here would be the language \emph{Gradle} which has been built to solve the problem of managing software development projects, and uses as first class citizens the nouns and verbs of the software development process, such as \emph{clean, run, process, etc}. It allows a domain expert to write a build process from scratch without having to know how to do a lot of the detailed work in the programming language. Gradle is written in Groovy, and compiles to the JVM, however it used by software developers developing in both JVM and non-JVM languages alike.
+Sometime the term \emph{Domain Specific Language(DSL)} is used to talk about a language which has been built purely to be used within one narrow domain of concern. An example here would be the language \emph{Gradle} which has been built to solve the problem of managing software development projects, and uses as first class citizens the nouns and verbs of the software development process, such as \emph{clean, run, process, etc}. It allows a domain expert to write a build process from scratch without having to know how to do a lot of the detailed work in the programming language. Gradle is written in Groovy, and compiles to the JVM, however it used by software developers developing in both JVM and non-JVM languages alike.
 
 The term DSL is general covering two main aspects of software analysis and design, the first is the modelling of the domain and the second is engineering an efficient programming language to express these models. Whilst these two aspects are often merged, for the sake of clarity we differentiate here, and take the layered approach taken by Latry et al~cite{latry2006processing}.
  
@@ -109,7 +109,7 @@ The term DSL is general covering two main aspects of software analysis and desig
 A Domain Specific Modelling Language is one that is purely targeting the problem domain, in that it describes problems and solutions in domain terms, and provides a language which domain experts can understand and implement within their domain. In this regard we are considering the domain of managing large datasets, ontologies and classification systems, and the domain experts we are considering are those who will create and edit these datasets. 
 
 \subsubsection{Domain Specific Programming Language}	
-A Domain Specific Programming language is concerned with how to implement a suitable language using a general purpose programming language(GPL), frameworks, aspects, etc. There are no real rules to developing a DSPL, and it maybe that developing a DSPL is simply a stage in the development of the DSL, or it may be a module within the DSL, 
+A Domain Specific Programming language is concerned with how to implement a suitable language using a general purpose programming language(GPL), frameworks, aspects, etc. There are no real rules to developing a DSPL, and it maybe that developing a DSPL is simply a stage in the development of the DSL, or it may be a module within the DSL. For the most part we haven't defined a DSPL for this project, the implementation has been carried out using the Groovy language. 
 **********
 **********
 
@@ -279,13 +279,24 @@ In implementing a metadata registry based on the standard we need to separate wh
 
 
 \section{Metadata Management}
-meta-management of core metadata set
+This section gives a brief overview of the tasks which data registration authorities face, the principle problem being what data is held where, what formats are being used and how does it relate to other datasets being managed directly or indirectly. It could be that one data item has a reference to another data item managed by a different authority and the only reference is a written instruction stating that this \emph{dataitem is not the same as that dataitem}. 
 
+The principal tasks faced by a data registration authority are given as:
 \begin{itemize}
-\item 
-\item 
-\item 
+\item Creation of new datasets
+\item Curation of existing datasets
+\item Merging of existing datasets
+\item Querying over existing datasets
 \end{itemize}
+
+The first task or use case is relatively straightforward, however there is one aspect that needs discussion. Very often datasets are developed by teams, and often using tools that are not really designed for dataset development. In the NHS we have found that many datasets are initially developed by domain experts using Excel, mostly because it is accessible and is easy to interpret at a high level. One of the biggest problems encountered here is simply co-ordination amongst the contributors. 
+
+The next task is curation of existing datasets, once a dataset is published and is being used it's shortcomings will be noted by users who will lobby for changes. Datasets are easier to manage if they conform to the Open-Closed Principle of software engineering, first introduced by Bertram Meyer \cite{Meyer} which states that a module should be open to extension and closed to change. This means that datasets or datamodels can be extended by being added to, but that existing items should not be changed. Changing is possible, but it implies the start of a completely new DataModel, since it is very difficult to migrate existing artefacts from DataModel A to DataModel B if something has been removed or changed in A, however the addition of say another DataElement won't break existing artefacts.
+
+The merging of datasets is another area of curation which is carried out by any registration authority and which is help by a metadata registry. The important points to note here are 1) the abiltiy to identify a particular element 2) the ability to relate it to another particular element and 3) the ability to measure the difference and decide which parts go into the merged dataset. Inevitably the mered dataset will contain back references to the originating dataitems, how easy these are to access and address is another point of note for the data curator.
+
+The last point is the querying of data itself, although this is not really a function of a metadata registry, data querying is dependent on having data indexed in a structured manner, even if the data itself is stored in an unstructured manner. The better the index the better the search, and in many cases indexed searches on unstructured data can be fast and more effective that searches on data stored in normalized relational databases. 
+
 
 
 \section{Results}
