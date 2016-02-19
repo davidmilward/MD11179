@@ -83,7 +83,38 @@ n this paper we present an ISO11179 metadata registry using a data-oriented Doma
 ISO11179 is the ISO standard for metadata registries. Metadata registries are used in many organisations to carry out a number of functions, nearly all of them are related to the need to ensure that data is used consistently within an organization.  The need for such a toolkit has become apparent in the last 10 years or so as the amount of data available to organizations has exploded, and despite the existence of an international standard metadata registries are implemented in a variety of different ways. In this paper we look at the intentions of the standard, and since there is no reference implementation of the standard we attempt to build an ISO11179 metadata registry using model driven engineering principles. During this process we examine the strengths and weaknesses of the standard and highlight areas in which the standard can be strengthened, made more user-friendly, adaptable and workable within an enterprise architectural framework. 
 
 
-\subsection{The Purpose of ISO11179}
+\section{Backgound}
+
+\subsection{Model Based Engineering}
+Model Based Engineering or Model Driven Engineering is the software engineering practise which utilises \emph{Models} as first class entities in analysing and designing a solution, code is then directly generated from the model. Ideally a situation is achieved whereby a complete round-trip is possible from the model to the code, and then from the code back to exactly the same model; in practise this is not always achieved, however considerable gains in code generation and prototyping, that make the modelling process worthwhile.
+
+The overall architecture is often broken down by considering abstraction layers, which are illustrated in Figure~\ref{fig:mbe1}
+\begin{figure}[h]
+\includegraphics[width=1.0\textwidth,natwidth=610,natheight=642]{Models1}
+\caption{Abstraction Layers in Model Based Engineering} 
+\label{fig:mbe1}
+\end{figure}
+We can see that UML itself sits at what is refered to as the M2 level in this architecture model. Each abstraction layer is defined so that the level \emph{below} can be seen as being an implementation of that layer; in this way the UML model is one implementation out of many possible implementations of the UML language. The UML Language itself is an implementation of the MOF meta-meta-language which resides at the M3 layer. It is possible to use UML to define other meta-models at the M2 level, one could for instance use a sub-set of UML to define just a data language at this level.
+
+When one builds a model for a system using MBE the model is normally at the same level of abstraction as the program.  So one would expect that a model which is built to represent an artefact, say a conference registration system to be built at level M!, and one would also expect there to be a direct one-to-one relationship between the model and the program itself. A Java or C\# program therefore would sit at the M1 level, and would be related directly to a model existing at that level.
+
+\subsubsection{Domain Specific Languages}
+Sometime the term \emph{Domain Specific Language(DSL)} is used to talk about a language which has been built purely to be used within one narrow domain of usage. An example here would be the language \emph{Gradle} which has been built to solve the problem of managing software development projects, and uses as first class citizens the nouns and verbs of the software development process, such as \emph{clean, run, process, etc}. It allows a domain expert to write a build process from scratch without having to know how to do a lot of the detailed work in the programming language. Gradle is written in Groovy, and compiles to the JVM, however it used by software developers developing in both JVM and non-JVM languages alike.
+
+The term DSL is general covering two main aspects of software analysis and design, the first is the modelling of the domain and the second is engineering an efficient programming language to express these models. Whilst these two aspects are often merged, for the sake of clarity we differentiate here, and take the layered approach taken by Latry et al~cite{latry2006processing}.
+ 
+
+\subsubsection{Domain Specific Modelling Language}
+
+A Domain Specific Modelling Language is one that is purely targeting the problem domain, in that it describes problems and solutions in domain terms, and provides a language which domain experts can understand and implement within their domain. In this regard we are considering the domain of managing large datasets, ontologies and classification systems, and the domain experts we are considering are those who will create and edit these datasets. 
+
+\subsubsection{Domain Specific Programming Language}	
+A Domain Specific Programming language is concerned with how to implement a suitable language using a general purpose programming language(GPL), frameworks, aspects, etc. There are no real rules to developing a DSPL, and it maybe that developing a DSPL is simply a stage in the development of the DSL, or it may be a module within the DSL, 
+**********
+**********
+
+
+\subsection{ISO11179}
 
 The ISO11179 Standard for metadata registries defines its purpose (ISO11179-1 section 0.2 General description of ISO/IEC 11179)as follows,
 \newline
@@ -97,13 +128,12 @@ to promote:
 \item Re-use of the components \emph{of descriptions} of data.
 \end{itemize}
 
-Interoperability isn't specifically mentioned, however these six items are very close to being a description of framework for interoperability for data and data components through the use of \emph{metadata}. There is no other international standards which tackle the issues of interoperability, although there are a number of accepted ``'maturity models' which target interoperability (REF) within the enterprise. These are similar in structure, address similar issues, but diverge slightly on implementation routes. The MDI model framework which emerged from the Athena and Interop NoE (REF) research projects have made progress in defining ways of implementing interoperability using model driven engineering concepts and ideas, and since ISO11179 is currently in use in both the Healthcare and Defence sectors we examine the core purposes of the standard to try and determine how we it achieves these purposes. We implement an ISO11179 conformant metadata registry using Model Based Engineering principles, and examine how use of these principles have helped achieved the purposes of ISO11179. 
+Interoperability isn't specifically mentioned, however these six goals are very close to being a description of framework for interoperability for data and data components through the use of \emph{metadata}. There is no other international standard which specifically tackles interoperability, although there are a number of accepted maturity models which address interoperability issues(NIEM, ECInterop) within the enterprise.  The MDI model framework which emerged from the Athena and Interop NoE (INTEROP, Athena) research projects have made progress in defining ways of implementing interoperability using model driven engineering concepts and ideas, and since ISO11179 is currently in use in both the Healthcare and Defence sectors we examine the core purposes of the standard to try and determine how we it achieves these purposes. We implement an ISO11179 conformant metadata registry using Model Based Engineering principles, and examine how use of these principles have helped achieved the purposes of ISO11179. 
 
-****I would like to do the comparison with a strictly conformant MDR such as Aristotle**************
 
 \subsubsection{Standard Data Description}
 
-The standard data description in ISO11179 is given in section1.6.1 where the idea of a data element is introduced, and with it the idea that it is composed of two parts, its conceptual part and its representational part. This section further puts forward the notion that a data element concept can be composed of two parts, an object class and a property. An object class is said to correspond with a class (in OO terms) or an entity(in ER terms). This is further illustrated with the illustration copied below in figure~\ref{fig:DEC}:
+The standard data description in ISO11179 is given in section1.6.1 where the idea of a data element is introduced, and with it the idea that it is composed of two parts, its conceptual part and its representational part. This section further puts forward the notion that a data element concept can be composed of two parts, an object class and a property. An object class is said to correspond with a class (in OO terms) or an entity(in ER terms). This is further illustrated with the illustration copied fro the ISO11179 documentation below in figure~\ref{fig:DEC}:
 
 \begin{figure}[h]
 \includegraphics[width=0.6\textwidth,natwidth=610,natheight=642]{DataElementConcept}
@@ -115,18 +145,12 @@ The standard continues to describe the relationship between data elements and th
 
 \begin{quotation} {sets of permissible values for data} \end{quotation}
 
-  this definition is not very far from the online dictionary of computing definition for the notion of \emph{type}: 
-\begin{quotation}
-\textbf{type} or \textbf{data type} : A set of values from which a variable, constant, function, or other expression may take its value. A type is a classification of data that tells the compiler or interpreter how the programmer intends to use it. For example, the process and result of adding two variables differs greatly according to whether they are integers, floating point numbers, or strings. 
-\end{quotation}
-
 This section then looks in detail at ways in which the conceptual aspects of data elements and value domains are related, and during these discussions the a fundamental model of value domains is presented. Other concepts such as measurement units and enumerations are used to further define the role of the value domain within the standard. Section 1.6 discusses aspects of classification of data elements, apart from the previously introduced notions of object class and property which are part of the Data Element Concept idea. An overview of a metadata registry is introduced in section 1.7, the main feature being that it is a database for metadata built along the lines of the conceptual model provided in section 3 of the standard. Section 1.8 covers the rest of the standard, in addition there is a detailed treatment of terminological principles in the appendix.
-
 
 
 \subsubsection{Common understanding of Data}
 
-Part 4 of the standard details how to formulate good data definitions, and data definitions are one of the aspects to achieving a common understanding. The advice in this part of the standard can be summarised as follows: 
+Part 4 of the standard details how to formulate good data definitions, and data definitions are one of the key aspects to achieving a common understanding. The advice in this part of the standard can be summarised as follows: 
 \begin{itemize}
 \item State the essential meaning of the concept
 \item Be precise and unambiguous
@@ -137,17 +161,14 @@ Part 4 of the standard details how to formulate good data definitions, and data 
 \item Use the same terminology and consistent logical structure for related definitions
 \item Be appropriate for the type of metadata being defined.
 \end{itemize}
-Use of these guidelines will of course help with the development of a common understanding of data, however it is only when these definitions can be viewed alongside the data item in question that these guidelines can be seen to be useful.
-
 
 \subsubsection{Re-use and Standardization of Data over time, space and applications}
 
 According to section 5 Standardization involves standardizing the descriptive data itself: characteristics, property values of characteristics, selection of signifiers, and the meaning of values.  It can occur at a variety of levels: agency, national , regional, or international. Governance is further applied by accredited standards organizations, who may well have their own standardization processes. ISO11179-5 details key aspects of naming which should be part of any naming system for data items contained in a registry, and lists a number of criteria which a conforming registry should adhere to. It doesn't prescribe any particular naming system, but rather the key qualities that a naming system should have, and which a registry should document. Part 6 details the organizational requirements for running and administering a metadata registry, however it doesn't specify how re-use or standardization of data over time, space and applications will be enhanced by using an ISO11179 conformant metadata registry. By applying a naming convention to metadata, and by enforcing a rigorous application of that naming convention we can standardise data, however there are no clear practical indications of how this is to be done in the standard.
 
-
 \subsubsection{Harmonization and Standardization of data}
 
-This is very similar to the purpose of the previous purpose, and again apart from the notes made previously it is difficult to see how the standard itself will further the harmonization of data, apart from the idea of having a uniquely agreed and administered naming and versioning system for data.
+This follows on from the previous goals listed in the standard, and there is little doubt that having the ability to compare data elements from different classification systems will greatly help in harmonizing datasets.
 
 \subsubsection{Management of the components \emph{of descriptions} of data}
 
@@ -183,15 +204,13 @@ Metadata items are constrained by a set of rules which are described as follows:
 The standard continues to provide a detailed account of how metadata items are related within the metadata registry, for the purposes of brevity we will not repeat them all here, but we may refer back to specific parts of the standard where required.
 
 
+
 \section{A DSML for ISO11179}
 
-In order to look at the ISO11179 standard from a modelling perspective we need to see how the current normative description and UML diagrams, which make up the ISO11179 model, fit into a MBE architecture. Figure~\ref{fig:mbe1} shows the standard view of abstractions from an MBE viewpoint:
+In order to look at the ISO11179 standard from a modelling perspective we need to see how the current normative description and UML diagrams, which make up the ISO11179 model, fit into a MBE architecture.  shows the standard view of abstractions from an MBE viewpoint:
 
-\begin{figure}[h]
-\includegraphics[width=1.0\textwidth,natwidth=610,natheight=642]{Models1}
-\caption{Abstraction Layers in Model Based Engineering} 
-\label{fig:mbe1}
-\end{figure}
+
+
 
 In FIgure~\ref{fig:mbe1}  we can see that UML itself sits at what is refered to as the M2 level in this architecture model. Each abstraction layer is defined so that the level \emph{below} can be seen as being an implementation of that layer; in this way the UML model is an implementation of the UML language, which in turn is am implementation of the MOF meta-meta-language which resides at the M3 layer. It is possible to use UML to define meta-models at the M2 level, and this is what is being done here by using UML and text to describe the ISO11179 Model in ISO11179-3. 
 
@@ -202,7 +221,10 @@ We have taken the appoach that if we can define the M2 layer, then building the 
 
 \subsection{Language Definition}
 
-The metamodel given is informed by experience with Healthcare information systems \cite{DSMCR} and by the development of an open source Metadata Registry built around similar principles. The reason for designing this DSML  is that we seek a meta-language to be able handle hetrogeneous metadata stored using a variety of languages. It needs to be able to capture metadata, in particular a detailed description the data is stored in relational databases, XML Schemas, XML files based on XML Schemas, Excel files and object-oriented programs. It then needs to be able to automatically transform the data into a number of simple formats. To do this each dataset at an M1 level needs to be described at the M2 level, by doing this we can build a container which can hold the metadata collected at the M1 level.
+The metamodel given is informed by experience with Healthcare information systems \cite{DSMCR} and by the development of an open source Metadata Registry built around similar principles. The DSML has been built to help with data curation and creation in the Healthcare domain, and as such is the result of discussion with domain experts in this sector.  It was not designed with ISO11179  in mind, however it is achieving in practise many of the aims of ISO11179. 
+
+
+The reason for designing this DSML  is that we seek a meta-language to be able handle hetrogeneous metadata stored using a variety of languages. It needs to be able to capture metadata, in particular a detailed description the data is stored in relational databases, XML Schemas, XML files based on XML Schemas, Excel files and object-oriented programs. It then needs to be able to automatically transform the data into a number of simple formats. To do this each dataset at an M1 level needs to be described at the M2 level, by doing this we can build a container which can hold the metadata collected at the M1 level.
 
 The core entities in the metamodel are as follows:
 \begin{itemize}
@@ -236,33 +258,44 @@ A DataModel is a versioning and grouping mechanism for one metadata-set, it migh
  A DataType is a basic type or value representation for a particular DataItem, it represents the kind of unit of the DataItem, for instance for it could be a set of values defined by a enumerations, or it could be a number represented by an integer or double DataType. The notion of DataType here is very similar to that which prevails in the Computer Science world and is defined by Pierce ~\cite{Pierce} as follows:
 \textbf{A type system is a tractable synthetic method for proving the absence of certain program behaviours by classifying phrases according to the kinds of values they compute}. 
 
-We use this modelling language to define metamodels, which are housed in the metadata registry, each metamodel being the description of a data-item or a group of data-items.
+We use this modelling language to define metamodels, which are housed in the metadata registry, each metamodel being the description of a data-item or a group of data-items. In the next section we explain how this language satisfies the metamodel described in ISO11179-3.
 
 
 
+\section{Implementation of the Metadata Registry}
 
-\subsection{Semantics}
-
-
-\subsection{ISO11179}
-
-
-
-\section{Metadata Registry}
+In implementing a metadata registry based on the standard we need to separate which parts of the specification deal with a metadata registry, and which parts specify the metadata which is registered in the registry. ISO11179:3 is split into several sections, sections 1 - 4 consist of an introduction, references, terminology and conformance details, for the purposes of implementing the MDR we need the following sections:
+\begin{itemize}
+\item Section 5 : Structure of a Metadata Registry
+\item Section 6 : Basic Package : common datatypes and classes
+\item Section 7 : Identification, Designation and Definition Package
+\item Section 8 : Registration Package
+\item Section 9 : Concepts Package
+\item Section 10 : Binary Relations Package
+\item Section 11 : Data Descriptions Package
+\end{itemize}
 
 \subsection{}
 
 
 \section{Metadata Management}
+meta-management of core metadata set
 
+\begin{itemize}
+\item 
+\item 
+\item 
+\end{itemize}
 
 
 \section{Results}
 
-\subsection{Comparison of Metadata Registries}
+
 
 
 \section{Discussion}
+
+\section{Related Work}
 
  
 
