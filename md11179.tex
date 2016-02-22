@@ -1,6 +1,5 @@
 \documentclass{llncs}
 
-
 \usepackage{listings}
 \usepackage{csquotes}
 \usepackage{color}
@@ -8,7 +7,6 @@
 \usepackage{graphicx}
 \usepackage{zed}
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
-%%\newtheorem{definition}{Definition}
  \usepackage{listings}
  \usepackage{courier}
  \lstset{
@@ -56,7 +54,55 @@
 
 
 
-\begin{document} 
+
+% we define a set of macros for constants of type 'Kind' 
+
+\def\datamodel{\mathsf{datamodel}}
+\def\dataclass{\mathsf{dataclass}}
+\def\dataelement{\mathsf{dataelement}}
+\def\enum{\mathsf{enum}}
+\def\enumeration{\mathsf{enumeration}}
+\def\primitivetype{\mathsf{primitivetype}}
+\def\datatype{\mathsf{datatype}}
+
+% and for multiplicity 
+
+\def\optional{0{\upto}1}
+\def\mandatory{1{\upto} 1}
+\def\many{0{\upto}*}
+
+% our partial ordering on constraints
+
+\def\Cimplies{\mathrel{\implies_c}}
+\def\Ciff{\mathrel{\iff_c}}
+
+% our partial ordering on text (this will become interesting later)
+
+\def\Timplies{\mathrel{\implies_t}}
+\def\Tiff{\mathrel{\iff_t}}
+
+% and conjunction 
+
+\def\Tand{\mathrel{\land_t}}
+\def\TAnd{\mathop{\land_t}}
+
+% our globalised version of the defining relations
+
+\def\refines{\mathrel{refines}}
+\def\newVersionOf{\mathrel{newVersionOf}}
+\def\extends{\mathrel{extends}}
+\def\contains{\mathrel{contains}}
+
+% we may have \sqsubseteq and \gg when it comes to analysis 
+
+% our two status values 
+
+\def\draft{\mathsf{draft}}
+\def\final{\mathsf{final}}
+
+\usepackage{zed}
+
+\begin{document}
 
 \title{Metadata Registry and management based on ISO11179 using Model Based Engineering}
 %If Title is too long, use \titlerunning
@@ -91,7 +137,7 @@ Model Based Engineering or Model Driven Engineering is the software engineering 
 In MBE the overall architecture of a software project is often classified using the notion of abstraction layers. Abstraction is used in many design processes, in software engineering many sub-processes lend themselves to various kinds of mathematical modelling.  In object oriented design objects are used as the main components of a program, rather than sub-routines or functions.  These objects can be \emph{abstracted} to a kind of templated object called a \emph{class}, a class will contain a blueprint for both data and methods.  Using this idea we consider the the program running, that is the interaction of different objects, to be at level M0.  At this level the program will consist of different objects interacting according original program code, which is written for the most part a collection of various \emph{classes}.  The program code, in effect the blueprint for the program, is considered to be an abstraction of the running program, and is considered to be at level M1.  A model or program at level M1 is defined by a blueprint of model, in effect a \textbf{meta-model} which exists that level M2, and likewise a \textbf{meta-model} can be defined at a higher level of abstraction.  This abstraction \emph{layering} can continue ad-infinitum, however most MBE practitioners use 4 levels, indeed the Model Driven Architecture agreed and specified by the OMG \cite{MOF242}, also known as the Meta Object Facility (MOF) currently limits itself to 4 layers, which are illustrated in Figure~\ref{fig:mbe1}
 
 \begin{figure}[h]
-\includegraphics[width=0.8\textwidth,natwidth=610,natheight=642]{Models1}
+\includegraphics[width=1.0\textwidth,natwidth=610,natheight=642]{Models1}
 \caption{Abstraction Layers in Model Based Engineering} 
 \label{fig:mbe1}
 \end{figure}
@@ -137,9 +183,9 @@ The standard itself is not a specification for building a physical or logical me
 
 
 
-\subsection{Design of an ISO11179 Metadata Registry}
+\section{Design of an ISO11179 Metadata Registry}
 
-ISO11179-3 has a detailed account of the registry metamodel and its attributes, and sets out to be relevent to application designers, system architects, and software developers. It uses UML 2.4.1 as a modelling language to describe the main features of a conformant metadata registry, although the standard itself is quite clear in not endorsing any particular environment, database management system, database design paradigm, system development methodology, data definition language, command language, system interface, user interface, computing platform or technology required for implementation. However in ISO11179-3.5 a metamodel is used to describe the information model of a metadata registry, and again the standard is clear that this should not limit the actual implementation technology used. The UML description is split into a number of packages:
+The ISO11179 standard as discussed describes a metamodel using text and UML 2.4. In order to arrive at a working model based specification we have taken that description and written it using a formal specification language.  This enabled us to generate both the registry and some of the transformations required to express datasets in terms of the standard.  ISO11179-3 has a detailed account of the registry metamodel and its attributes, and sets out to be relevent to application designers, system architects, and software developers. It uses UML 2.4.1 as a modelling language to describe the main features of a conformant metadata registry, although the standard itself is quite clear in not endorsing any particular environment, database management system, database design paradigm, system development methodology, data definition language, command language, system interface, user interface, computing platform or technology required for implementation. However in ISO11179-3.5 a metamodel is used to describe the information model of a metadata registry, and again the standard is clear that this should not limit the actual implementation technology used. The UML description is split into a number of packages:
 \begin{itemize}
 \item Basic Package
 \item Identification Metamodel
@@ -149,35 +195,10 @@ ISO11179-3 has a detailed account of the registry metamodel and its attributes, 
 \item Binary Relations Package
 \item Data Descriptions Package
 \end{itemize}
-Metadata items are constrained by a set of rules which are described as follows:
-\begin{itemize}
-\item Rule 1 : A metadata item is  \emph{identified} if has one or more identification associations each with a \emph{Scoped\_Identifier} class.
-\item Rule 2 : A metadata item is  \emph{designated} if it has one or more item\_designation associations each with a \emph{Designation} class
-\item Rule 3 : A metadata item is \emph{defined} if it has one or more item\_definition associations each with a \emph{Definition} class
-\item Rule 4 : A metadata item is \emph{classified} if it has one or more Classification association classes, each with a concept class in a Concept\_System.
-\item Rule 5 : A metadata item is  \emph{registered} if it has one or more \emph{submission} associations, each with a Submission\_record class.
-\item Rule 6 :  A metadata item is  \emph{administered} if it has exactly one stewardship association with a Stewardship\_Record class - only applies where rule 7 does not apply
-\item Rule 7 : A metadata item is \emph{attached} if it has exactly one attachment association with an Administered\_Item class - can only apply in cases where rule 6 does not.
-\end{itemize}
 
 The standard continues to provide a detailed account of how metadata items are related within the metadata registry, for the purposes of brevity we will not repeat them all here, but we may refer back to specific parts of the standard where required.
 
-
-
-\section{A DSML for Data}
-
-\subsection{ISO11179 in MBE}
-
-In order to look at the ISO11179 standard from a modelling perspective we need to see how the current normative description and UML diagrams, which make up the ISO11179 model, fits into a MBE architecture. In FIgure~\ref{fig:mbe1} we can see that UML itself sits at what is refered to as the M2 level in this architecture model. Each abstraction layer is defined so that the level \emph{below} can be seen as being an implementation of that layer; in this way the UML model is an implementation of the UML language, which in turn is  an implementation of the MOF meta-meta-language which resides at the M3 layer. It is possible to use UML to define meta-models at the M2 level, and this is what is being done here by using UML and text to describe the ISO11179 Model in ISO11179-3. 
-
-The model description in the ISO11179 defines aspects of the implementation, but often does not differentiate clearly between aspects of the MDR itself, and the groups of metadata which it is holding. In reference to Figure~\ref{fig:mbe1} it is not clear which items belong at M2 and which at M1levels.  For instance is it necessary to instantiate a class of \emph{Value Domain} objects within the registry, or is it sufficient to represent this aspect of a data element using other properties of a data element class.
-
-We took the appoach that if we can define the M2 layer, then building the M1 will be straightforward using standard model based engineering techniques. This approach still leaves the implementation details as details which can be adjusted for any particular environment, we can use different code generators on different platforms to generate different implementations of a metadata registry, but still keeping to the original standard.
-
-.....TODO......
-
-
-\subsection{Language Definition}
+\subsection{Registry Overview}
 
 The metamodel or language for data we describe is informed by experience with Healthcare information systems \cite{DSMCR} and by the development of an open source Metadata Registry built around similar principles. The DSML has been built to help with data curation and creation in the Healthcare domain, and as such is the result of discussion with domain experts in this sector. The reason for designing this DSML  is that we seek a meta-language to be able handle hetrogeneous metadata stored using a variety of languages. It needs to be able to capture metadata, in particular a detailed description the data is stored in relational databases, XML Schemas, XML files based on XML Schemas, Excel files and object-oriented programs. It then needs to be able to automatically transform the data into a number of simple formats. To do this each dataset at an M1 level needs to be described at the M2 level, by doing this we can build a container which can hold the metadata collected at the M1 level.
 
@@ -196,80 +217,395 @@ The core entities in the metamodel are as follows:
 \label{fig:lemma}
 \end{figure}
 
-This metamodel forms a language in its own right which is able to describe the structure of data, it doesn't deal with behaviour so there are few operations in this language.
+Since all items are in effect \emph{ConceptItems} they can be considered to be representing a concept; furthermore all such items can have a relationship with any other conceptitem, and can be \emph{tagged} to reference items outside the registry, such as IRI's or webpages. Some of the core items in ISO11179-3 which are represented by UML diagrams can be directly represented in the core language, others are built in the manner described in the UML diagrams. 
 
-The language is a language of \emph{metadata} and it will normally sit within the context of a metadata registry or similar server artefact. The core entity in our new model is the \emph{ConceptElement} which is in effect an abstract entities from which most of the other entities derive, it handles the versioning control through the use of a GUID, which has the added benfit of turning metadata into \emph{linked metadata} automatically. The ConceptElement together with the \emph{Relationship} entity is able to define relationships between any of its sub-entities. The Tag class allows any vocabulary or ontology element to be associated with any catalogue element. This we will see later on will enable the import of standard ontologies into a metadata registry built around this metamodel.
+The CaBIG registry was built on similar principles, but required a mapping algorithm to translate from UML to the ISO11179 Conceptual model as is documented in the paper by Kunz et al~\cite{Kunz2009}. In fact several mapping algorithms were tested, the main mapping is shown in Figure~\ref{fig:mapping}. By using a model based approach we avoid the need for such a mapping, instead our registry simply defines an ISO11179 view on the various datasets which are imported into the registry.  Some mapping algorithms are used in mapping XML to this model, and in comparing different dataitems within the registry.
+
+\begin{figure}[h]
+\includegraphics[width=1.0\textwidth,natwidth=610,natheight=642]{ISOUMLTransform}
+\caption{CaBIG ISO to UML Tranform} 
+\label{fig:mapping}
+\end{figure}
+
+
+
+\subsection{Registry Contents}
+
+
+
+All of our conceptitems in the registry will have identifiers, unique within the context of the registry, this implements Rule 1 of the previous section.  Classes will be uniquely named within models, elements will be uniquely named within classes.  
+\begin{zed}
+  [Id, Name]
+\end{zed}
+
+A data element has multiplicity: the three values that are important
+to us are as follows:
+\begin{syntax}
+  Multiplicity & ::= & \optional \mid \mandatory \mid \many 
+\end{syntax}
+
+It has also ordering 
+\begin{syntax}
+  Ordering & ::= & ordered \mid notOrdered 
+\end{syntax}
+
+Although a registry could support other kinds of link, there are two that are important to us here: $extends$ and $newVersionOf$. These refer to other items, using identifiers rather than names. The intended semantics of an conceptitem consists primarily in its textual explanation.  Additional information comes from any other items that contain the element: the class, and the model. We introduce the \emph{Interpretation}.
+\begin{zed}
+  [Interpretation]
+\end{zed}
+A piece of text can be interpreted in multiple ways, and thus: 
+\begin{zed}
+  Text == \power Interpretation
+\end{zed}
+
+The language is a language of \emph{metadata} and it will normally sit within the context of a metadata registry or similar server artefact. The core entity in our new model is the \emph{ConceptItem} which is in effect an abstract entity from which most of the other entity derive. At its core is the idea that it represents a concept in some shape or form, and that we can make the name and text description originate from a vocabulary or terminology server. As an entity it can be related to any other entity in the registry using the Relationship artefact. Versioning control is handled through the use of a GUID, which has the added benfit of turning metadata into \emph{linked metadata} automatically. The Tag class allows any vocabulary or ontology element to be associated with any catalogue element. This ensures the import of standard ontologies into a metadata registry built around this metamodel.
+
+\begin{schema}{ConceptItem}
+  id : Id \\
+  name : Name \\
+  text : Text \\
+  kind : Kind \\  
+  extends, newVersionOf : \power Id
+\end{schema}
 
 \subsubsection{DataModel}
-A DataModel is a versioning and grouping mechanism for one metadata-set, it might for instance be metadata connected with a particular database, or a particular XSD Schema which is used in a particular domain, however it allows us to group and version a related set of DataClasses.  A DataModel can contain many DataElements, and many DataTypes. A DataModel contains one or more DataItems, which may be implemented as DataClasses, DataElements, DataTypes or EnumerationValues. As all DataItems are also AbstractItems, they can have Tags, which link them to entities outside that DataModel using URI's, and they can have Relationships which are two-way associations with other AbstractItems. DataConstraints are attached to each DataModel and are applicable within that DataModel.
+
+ DataModel is a versioning and grouping mechanism for one metadata-set, it might for instance be metadata connected with a particular database, or a particular XSD Schema which is used in a particular domain, however it allows us to group and version a related set of DataClasses.  A DataModel can contain many DataElements, and many DataTypes. A DataModel contains one or more DataItems, which may be implemented as DataClasses, DataElements, DataTypes or EnumerationValues. As all DataItems are also ConceptItems, they can have Tags, which link them to entities outside that DataModel using URI's, and they can have Relationships which are two-way associations with other ConceptItems. DataConstraints are attached to each DataItem in the DataModel. A DataModel also declares a status, which can be draft or final.
+
+\begin{syntax}
+  Status & ::= & \draft \mid \final 
+\end{syntax}
+
+Each datamodel has a globally unique identifier.  
+\begin{zed}
+  [GUID]
+\end{zed}
+
+\begin{schema}{DataModel}
+  ConceptItem \\
+  guid : GUID \\
+  dataclasses, dataelements, datatypes, enumerations, primitivetypes : \power Id \\
+  imports : \power Id \\
+  status : Status 
+  \where
+  kind = \datamodel
+\end{schema}
+
+
+\subsubsection{DataItem}
+A DataItem is child artefact of a ConceptItem, with the ability to contain a DataConstraint. DataConstraints may be described in the context of any sub-type of a DataItem, that is DataElement, DataType, Enumeration or Enum. Since DataModels contain DataItems one can also group the conjunction of constraint information at the DataModel level.  All that we need to know of DataConstraints is that an implication ordering exists as a partial order upon this given type. 
+
+\begin{zed}
+  [DataConstraint]
+\end{zed}
+
+%%inrel \Cimplies 
+\begin{axdef}
+  \_ \Cimplies \_ : DataConstraint \rel DataConstraint 
+  \where
+  \id DataConstraint \subseteq (\_ \Cimplies \_) \\
+  (\_ \Cimplies \_) \cap (\_ \Cimplies \_) \inv = \id DataConstraint   
+\end{axdef}
+
+
+
+\begin{schema}{DataItem}
+ ConceptItem \\
+ dataConstraint : DataConstraint \\
+\end{schema}
+
 
 \subsubsection{DataClass}
- A DataClass is a mechanism for grouping DataItems, which are atomic pieces of data. A concept may be represented by a class, but the DataItem is the atomic component of that class, it can't be reduced into any smaller component. A DataClass can be used as a DataItem, in that it can be contained within another DataClass, and so it can be used to provide multi-level grouping within a DataModel. A DataClass can \emph{extend} another DataClass, this \emph{inheritance} mechanism is very straightforward, it allows the child class to have all the member DataItems and DataClasses that are present in the parent. These DataItems and DataClasses are in effect references, so that if the parent class changes then these \emph{inherited} DataItems and DataClasses will be changed as well.
- 
- \subsubsection{DataElement}
- A DataElement is the smallest data entity described in this langauge, it has a direct one to one relationship with a DataType, since every DataElement will have a corresponding DataType. 
- 
- \subsubsection{DataType}
- A DataType is a basic type or value representation for a particular DataItem, it represents the kind of unit of the DataItem, for instance for it could be a set of values defined by a enumerations, or it could be a number represented by an integer or double DataType. The notion of DataType here is defined by Pierce~\cite{Pierce} as follows:
-\textbf{A type system is a tractable synthetic method for proving the absence of certain program behaviours by classifying phrases according to the kinds of values they compute}. 
+A DataClass is a mechanism for grouping DataItems, which are atomic pieces of data. A concept may be represented by a DataClass or a DataElement, but the DataItem is the atomic component of that DataClass, it can't be reduced into any smaller component. A DataClass can be used as a DataItem, in that it can be contained within another DataClass, and so it can be used to provide multi-level grouping within a DataModel. A DataClass can \emph{extend} another DataClass, this \emph{inheritance} mechanism is very straightforward since we are only considering structure and not behaviour; it allows the child class to have all the member DataItems and DataClasses that are present in the parent. These DataItems and DataClasses are in effect references, so that if the parent class changes then these \emph{inherited} DataItems and DataClasses will be changed as well.
+For the formal specification of the DataClass, we record extension and composition relationships.
 
-We use this modelling language to define metamodels, which are housed in the metadata registry, each metamodel being the description of a data-item or a group of data-items. In the next section we explain how this language satisfies the metamodel described in ISO11179-3.
+\begin{schema}{DataClass}
+  DataItem \\
+  dataelements : \power Id \\
+  extends : \power Id \\
+  components : \power Id 
+  \where
+  kind = \dataclass
+\end{schema}
 
-\subsection{Language Entities}
+\subsubsection{DataElement}
 
-The overall item in our language is a \emph{DataModel}, a DataModel will contain other DataItems, which in turn can be made up from a number of different entities.
+A DataElement is the smallest data entity described in this langauge, it has a direct one to one relationship with a DataType, since every DataElement will have a corresponding DataType. DataElements have multiplicity and ordering. 
 
-We introduce an entity called a \emph{DataClass}, in order to group and classify DayaItems, a \emph{DataClass} is similar to a \emph{class} in UML, and in other languages such as Java. A DataClass can contain DataElements, and it can also contain other DataClasses. DataClasses are grouped into DataModels which represent a unitary collection of data entities which can be managed and versioned together, in practise these will correspond with current datasets such as COSD, curated datasets used for a singular purpose in a particular domain, such as Healthcare. In UML the \emph{grouping} mechanism is the \emph{class}, however within ISO11179 a mechanism of grouping on either \emph{object class} or \emph{property} is mandated, this has no meaning within the model driven world so we cannot use it here. 
+\begin{schema}{DataElement}
+  DataItem \\
+  multiplicity : Multiplicity \\
+  ordering : Ordering \\
+  dataType : Id 
+  \where
+  kind = \dataelement
+\end{schema}
+
+\subsubsection{DataTypes}
+
+Enumerations have a sequence of references to values. 
+
+\begin{schema}{Enumeration}
+  DataItem \\
+  enums : \power Id 
+  \where
+  kind = \enumeration
+\end{schema}
+
+Enumerated values have a value.  
+
+\begin{zed}
+  [Value]
+\end{zed}
+
+\begin{schema}{Enum}
+  DataItem \\
+  value : Value 
+  \where
+  kind = \enum 
+\end{schema}
+
+And primitives are primitives. 
+
+\begin{schema}{PrimitiveType}
+  DataItem \\
+  values : \power Value 
+  \where
+  kind = \primitivetype
+\end{schema}
+
+\subsubsection{Items}
+
+Here we are looking at any language entity which could be present in a registry, an item could be any of the following artefacts, all of which will be kept within a metadata registry.
+
+\begin{zed}
+  Item \defs DataModel \lor DataClass \lor DataElement \lor DataType \\
+                                            \lor PrimitiveType  \lor Enumeration \lor Enum
+\end{zed}
+
+************ Need to include Tag, Relationship, ReferenceType
 
 
-We need to introduce some general sets, to model things like identifiers, names etc, hence:
+
+\subsection{The Registry Itself}
+
+A registry is an indexed collection of items. 
+
+The path to an item starts with the guid of a model, and is then followed by a sequence of names. 
+\begin{zed}
+  Path == \seq Name 
+\end{zed}
+
+\begin{schema}{Concept\_Items}
+  item : Id \pfun Item \\
+  items : \power Id \\
+  path : Id \pfun Id \pfun Path 
+\end{schema}
+
+We introduce names for the sets of identifiers pointing to different
+kinds of items:
+
+\begin{schema}{Registry\_Sets}
+  datamodels, dataclasses, dataelements, enumerations, datatypes, \\
+  primitivetype, enums : \power
+  Id 
+\end{schema}
+
+We introduce also the `global' relationships implied by the reference-valued attributes $extends$ and $newVersionOf$:
+
+%%inrel \refines \newVersionOf
+\begin{schema}{Registry\_Links}
+  \_ \extends \_, \_ \newVersionOf \_ : Id \rel Id 
+\end{schema}
+
+Similarly, we introduce the global relationships implied by containment: 
+
+%%inrel \contains \extends
+\begin{schema}{Registry\_Structure}
+  \_ \contains \_ : Id \rel Id \\
+  datamodel : Id \pfun Id \\
+  contents, scope : Id \pfun \power Id \\
+  values : Id \pfun \power Value 
+\end{schema}
+
+We may now describe registry properties in terms of the combination of all of these identifiers:
+
+\begin{schema}{Registry\_Contents}
+  Registry\_Items \\
+  Registry\_Sets \\
+  Registry\_Links \\
+  Registry\_Structure
+\end{schema}
+
+\subsubsection{Consistency and derivation}
 
 
+\begin{schema}{Registry\_Items\_Derivation}
+  Registry\_Contents
+  \where
+  \dom conceptitem = conceptitem \\
+  \forall m : datamodels ; i : conceptitems \spot {} \\ \t1 
+  \LET c == (\mu x : dataclasses \mid i \in (conceptitem~x).elements) \spot
+  {} 
+  \\ \t2 
+  path~m~i = \langle (conceptitem~m).name, (conceptitem~c).name, (conceptitem~i).name
+  \rangle 
+\end{schema}
 
-At a basic level the language is dealing with AbstractItems, any of which can represent a piece of data. These \emph{AbstractItems} can form relationships with other items, so that any item in the language can have a relationship with any other item, unless contrained not to. Any item can \emph{own} or \emph{contain} any number of \emph{Tags}, which can reference other data items outside of this particular model, using a URI as its identifier.  
+\begin{schema}{Registry\_Sets\_Derivation}
+  Registry\_Contents
+  \where 
+  datamodels = \{ i : \dom conceptitem \mid (conceptitem~i).kind = \datamodel \} \\
+  dataclasses = \{ i : \dom conceptitem \mid (conceptitem~i).kind = \dataclass \} \\
+  dataelements = \{ i : \dom conceptitem \mid (conceptitem~i).kind = \dataelement \} \\
+  enumerations = \{ i : \dom conceptitem \mid (item~i).kind = \enumeration \} \\
+  primitivetypes = \{ i : \dom conceptitem \mid (conceptitem~i).kind = \primitivetype \} \\
+  enums = \{ i : \dom conceptitem \mid (conceptitem~i).kind = \enum \} \\
+  \dom conceptitem = \bigcup \{ datamodels, dataclasses, dataelements, enumerations,
+  primitivetypes, enums \} \\
+  final = \bigcup \{~i : datamodels \mid (conceptitem~i).status = \final \spot \{ i \}
+  \cup contents~i~\} 
+\end{schema}
 
-We need to model the basic entities in our new language:
-%\begin{syntax}
- % Kind & ::= & \abstractitem \mid \datamodel \mid \dataitem \mid \dataclass \\
- % 	 & \mid & \tag \mid \dataelement  \mid \datatype \mid \enum \\
- % 	   & \mid & \enumeration \mid \primitivetype 
-%\end{syntax}
+\begin{schema}{Registry\_Links\_Derivation}
+  Registry\_Contents 
+  \where 
+  (\_ \newVersionOf \_) \in datamodels \rel datamodels \\
+  (\_ \refines \_) \in {} \\ \t1 
+  (dataclasses \rel classes) \cup (dataelements \rel
+  dataelements) \cup (enums \rel enums) \\
+  \forall i,j : \dom conceptitem \spot {} \\
+  \t1 i \newVersionOf j \iff j \in (conceptitem~i).newVersionOf \land {} \\
+  \t1 i \extends j \iff j \in (conceptitem~i).extends 
+\end{schema}
 
+That is, only models are versioned, and every semantic link connects two items of the same kind, whether these are dataclasses, dataelements, or values.
 
+One item is contained within another if it is declared and managed in the context of that other item: for example, every element is declared in the context of a unique dataclass, and every item is declared in the context of a datamodel.  For convenience, we define not only a $contains$ relation, between references, but also a $contents$ function, returning references to all of the items contained within a referenced item.
 
-\section{Implementation of the Metadata Registry}
+The $extends$ function is more straightforward. 
 
-In implementing a metadata registry based on the standard we need to separate which parts of the specification deal with a metadata registry, and which parts specify the metadata which is registered in the registry. ISO11179:3 is split into several sections, sections 1 - 4 consist of an introduction, references, terminology and conformance details, for the purposes of implementing the MDR we need the following sections:
+\begin{schema}{Registry\_Structure\_Derivation\_Contents}
+  Registry\_Contents
+  \where
+  \forall m : datamodels \spot contents~m = {} \\
+  \t1 (item~m).dataclasses \cup (item~m).enumerations \cup
+  (item~m).primitivetypes \cup {} \\
+  \t1 \bigcup \{~c : (item~m).dataclasses \spot contents~c~\} \cup {} \\
+  \t1 \bigcup \{~n : (item~m).enumerations \spot contents~n~\}
+  \\
+  \forall c : dataclasses \spot contents~c = {} \\
+  \t1 (item~c).dataelements  \cup {} \\
+  \t1 \bigcup \{~s : (item~c).components \spot contents~s ~\}
+  \\
+  \forall n : enumerations \spot contents~n = (item~n).enums
+  \\
+  \dom contents = \bigcup \{ datamodels,data classes, enumerations \} 
+  \\
+  \bigcup (\ran contents) = \bigcup \{ dataclasses, dataelements, enumerations, enums,
+  primitivetypes \} 
+  \\
+  \forall i : \dom item \spot contents~i = (\_ \contains \_) ~\limg \{ i \}
+  \rimg \\
+  (\_ \extends \_) \in dataclasses \rel dataclasses \\
+  \forall c, d : dataclasses \spot c \extends d \iff 
+  d \in (item~c).extends
+\end{schema}
+
+That is, the contents of a model includes the contents of any classes and enumerations that it contains, a class contains its elements, and an enumeration contains its values.  Only models, classes, and enumerations have contents, and only classes, elements, enumerations, values, and primitives---not models---can be contained. 
+
+A related but not equivalent notion is that of the `scope' of a model. This is a set of references to every item contained within that model, or contained within a model that it `imports'. 
+
+\begin{schema}{Registry\_Structure\_Derivation\_Scope}
+  Registry\_Contents
+  \where
+  \dom scope = datamodels 
+  \\
+  \forall m : datamodels \spot scope~m = contents~m \cup \bigcup 
+  ( contents~ \limg (item~m).imports \rimg )
+\end{schema}
+
+It will be convenient also to consider the inverse relational image of
+the closure of this function.  For any non-model item in the
+catalogue, this will return a reference to the unique model containing
+that item. 
+
+\begin{schema}{Registry\_Structure\_Derivation\_Model}
+  Registry\_Contents
+  \where
+  \dom model = \bigcup \{ dataclasses, dataelements, enumerations, enums,
+  primitivetypes \} \\
+  datamodel = ((\_ \contains \_)\star)\inv \rres datamodels
+\end{schema}
+
+\begin{zed}
+  Registry\_Structure\_Derivation \defs {} \\ \t1 
+  Registry\_Structure\_Derivation\_Contents \land {} \\ \t1 
+  Registry\_Structure\_Derivation\_Scope \land {} \\ \t1 
+  Registry\_Structure\_Derivation\_Model   
+\end{zed}
+
+\begin{zed}
+  Registry\_Derivation \defs {} \\ \t1 
+  Registry\_Sets\_Derivation \land {} \\ \t1 
+  Registry\_Links\_Derivation \land {} \\ \t1 
+  Registry\_Structure\_Derivation 
+\end{zed}
+
+\subsection{Registry Properties}
+
+A datamodel can import only other datamodels known to the registry.
+
+\begin{schema}{Registry\_Imports}
+  Registry\_Contents 
+  \where
+  \forall m : datamodels \spot (item~m).imports \subseteq datamodels
+\end{schema}
+
+Every reference to a type must be to a type known to the catalogue: a
+known class, enumeration, or primitive. 
+
+\begin{schema}{Registry\_TypesDefined}
+  Registry\_Contents
+  \where
+  \forall e : dataelements \spot (item~e).type \in dataclasses \cup enumerations \cup
+  primitives 
+\end{schema}
+
+A datamodel may be a new version only of a finalised datamodel.  A datamodel may be final only if all imported datamodel are also final.  An item may be finalised only if all of its outgoing semantic links are to finalised items.
+
+\begin{schema}{Registry\_Final}
+ Registry\_Contents
+  \where
+  \ran (\_ \newVersionOf \_) \subseteq final \\
+  \forall f : final \cap datamodels \spot (item~f).imports \subseteq final \\
+  (\_ \refines \_) \limg final \rimg \subseteq final 
+\end{schema}
+
+\begin{zed}
+  Registry\_Properties \defs {} \\ \t1
+  Registry\_Imports \land {} \\ \t1 
+  Registry\_TypesDefined \land {} \\ \t1
+  Registry\_Final 
+\end{zed}
+
+\subsection{Semantics}
+
+***************NEEDS REVISION*************************
+
+The `semantics' of a data element is a mapping from possible values to \emph{a set of} possible interpretations.  Or, equally, a \emph{relation} between values and interpretations. 
+
+The intended interpretation of a given value, in the context of a given registry, will depend upon:
 \begin{itemize}
-\item Section 5 : Structure of a Metadata Registry
-\item Section 6 : Basic Package : common datatypes and classes
-\item Section 7 : Identification, Designation and Definition Package
-\item Section 8 : Registration Package
-\item Section 9 : Concepts Package
-\item Section 10 : Binary Relations Package
-\item Section 11 : Data Descriptions Package
+\item the text describing the value
+\item the text describing the value type (primitive, enumerated or referenced)
+\item the text describing the dataelement
+\item the text describing the dataclass in which the element is defined,
+  and any dataclasses `containing' that dataclass
+\item the text describing the datamodel containing the dataelement
+\item the text of any item that these items are linked to using$\extends$ 
 \end{itemize}
-
-\subsection{Structure of a Metadata Registry}
-The following sections provide a brief overview of our approach to building the registry using the DSML, and how it can be used to implement  the requirements given in this section of the standard.
-
-\subsubsection{Basic Package : common datatypes and classes}
-
-
-
-\subsubsection{Identification, Designation and Definition Package}
-
-
-
-
-
-\subsubsection{Registration Package}
-
-\subsubsection{Concepts Package}
-
-\subsubsection{Binary Relations Package}
-
-\subsubsection{Data Descriptions Package}
+Any of this text---even that which has been attached to a primitive value domain---may have something specific to say about a given data element.  
 
 
 \section{Metadata Management}
@@ -310,51 +646,6 @@ The last point is the querying of data itself, although this is not really a fun
 \bibliographystyle{plain}
 
 \bibliography{md11179}
-%%\subsubsection{Standard Data Description}
 
-%%The standard data description in ISO11179 is given in section1.6.1 where the idea of a data element is introduced, and with it the idea that it is composed of two parts, its conceptual part and its representational part. This section further puts forward the notion that a data element concept can be composed of two parts, an object class and a property. An object class is said to correspond with a class (in OO terms) or an entity(in ER terms). This is further illustrated with the illustration copied fro the ISO11179 documentation below in figure~\ref{fig:DEC}:
+\end{document}
 
-%%\begin{figure}[h]
-%%\includegraphics[width=0.6\textwidth,natwidth=610,natheight=642]{DataElementConcept}
-%%\caption{Data Elements and Data Element Concepts} 
-%%\label{fig:DEC}
-%%\end{figure}
-
-%%The standard continues to describe the relationship between data elements and the concepts associated with them, and also puts forward the notion that a data element is produced when a data element concept is associated with a representation. The notion of \emph{value domains} is introduced, where a value domain is defined as:
-
-%%\begin{quotation} {sets of permissible values for data} \end{quotation}
-
-%%This section then looks in detail at ways in which the conceptual aspects of data elements and value domains are related, and during these discussions the a fundamental model of value domains is presented. Other concepts such as measurement units and enumerations are used to further define the role of the value domain within the standard. Section 1.6 discusses aspects of classification of data elements, apart from the previously introduced notions of object class and property which are part of the Data Element Concept idea. An overview of a metadata registry is introduced in section 1.7, the main feature being that it is a database for metadata built along the lines of the conceptual model provided in section 3 of the standard. Section 1.8 covers the rest of the standard, in addition there is a detailed treatment of terminological principles in the appendix.
-
-
-%\subsubsection{Common understanding of Data}
-
-%%Part 4 of the standard details how to formulate good data definitions, and data definitions are one of the key aspects to achieving a common understanding. The advice in this part of the standard can be summarised as follows: 
-%%\begin{itemize}
-%%\item State the essential meaning of the concept
-%%\item Be precise and unambiguous
-%%\item Be concise
-%%\item Be able to stand alone
-%%\item Be expressed without embedding rationale, functional usage, domain information, or procedural information.
-%%\item Avoid circular reasoning
-%%\item Use the same terminology and consistent logical structure for related definitions
-%%\item Be appropriate for the type of metadata being defined.
-%%\end{itemize}
-
-%\subsubsection{Re-use and Standardization of Data over time, space and applications}
-
-%%According to section 5 Standardization involves standardizing the descriptive data itself: characteristics, property values of characteristics, selection of signifiers, and the meaning of values.  It can occur at a variety of levels: agency, national , regional, or international. Governance is further applied by accredited standards organizations, who may well have their own standardization processes. ISO11179-5 details key aspects of naming which should be part of any naming system for data items contained in a registry, and lists a number of criteria which a conforming registry should adhere to. It doesn't prescribe any particular naming system, but rather the key qualities that a naming system should have, and which a registry should document. Part 6 details the organizational requirements for running and administering a metadata registry, however it doesn't specify how re-use or standardization of data over time, space and applications will be enhanced by using an ISO11179 conformant metadata registry. By applying a naming convention to metadata, and by enforcing a rigorous application of that naming convention we can standardise data, however there are no clear practical indications of how this is to be done in the standard.
-
-%%\subsubsection{Harmonization and Standardization of data}
-
-%%This follows on from the previous goals listed in the standard, and there is little doubt that having the ability to compare data elements from different classification systems will greatly help in harmonizing datasets.
-
-%%\subsubsection{Management of the components \emph{of descriptions} of data}
-
-%%Here the standard has changed in that the last iteration of the standard has changed the purpose from \emph'{Management of the components of data} to \emph'{Management of the components of descriptions of data}. Most computer scientists would read this as being a change from the idea of \emph{object} to \emph{class}, since an object can be seen as being a component of data, and a class as being a component of a description of data. We consider the term \emph{metadata components} or \emph{models} to be more fitting. Although the management of data components or metadata components is talked about within the standard, it is very often in the terms of the meta-model behind the standard, ideas such as \emph{arranging semantic components with a naming convention} (ISO11179-5.p6) are discussed, but with almost no reference to actual details of what a semantic component is, whether it is referring to combination of a data element and data element concept or an object running in an object oriented programming language. In our view the management models or metadata components is not really addressed by the standard, and it really needs to be.
-
-%%\subsubsection{Re-use of the components of descriptions of data}
-
-%%As with the previous discussion we fail to see any direct way in which the standard supports this avowed purpose except indirectly. There is no real definition on what is being referred to by descriptions of data, except in the discussions over what is metadata, when it appears that metadata is defined as being ``'descriptions of data'. This being the case it begs the question of why this purpose is using the terminology \emph{descriptions of data} instead of \emph{metadata}. 
-
-\end{document}  
