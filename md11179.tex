@@ -253,7 +253,7 @@ The ISO11179 standard as discussed describes a metamodel using text and UML 2.4.
 
 The standard continues to provide a detailed account of how metadata items are related within the metadata registry, for the purposes of brevity we will not repeat them all here, but we may refer back to specific parts of the standard where required.
 
-This section details a brief account of the specification of the ISO11179 registry using Z, it is not however the full specification which was too large to include in this paper. Also included is a partial specification of our DSML, again some but not all the Z specification is included.
+This section details a brief account of the specification of the ISO11179 registry using Z, it is a partial speicifcation, and omits a lot of the details which are included in the original standard, also included is a partial specification of our DSML.
 
 
 
@@ -262,7 +262,7 @@ This section details a brief account of the specification of the ISO11179 regist
 
 The metamodel or language for data we describe is informed by our experience with Healthcare information systems which is documented in a previous paper \cite{DSMCR} and by the development of an open source Metadata Registry built around similar principles. The DSML has been built to help with data curation and creation in the Healthcare domain, and as such is the result of discussion with domain experts in this sector. The reason for designing this DSML  is that we seek a meta-language to be able handle hetrogeneous metadata stored using a variety of languages. It needs to be able to capture metadata, in particular a detailed description the data is stored in relational databases, XML Schemas, XML files based on XML Schemas, Excel files and object-oriented programs. It then needs to be able to automatically transform the data into a number of simple formats. To do this each dataset at an M1 level needs to be described at the M2 level, by doing this we can build a container which can hold the metadata collected at the M1 level.
 
-The metamodel in ISO11179-3 is defined in terms of UML and text, and the description is split into a number of packages, which in turn are related.
+The metamodel in ISO11179-3 is defined in terms of UML and text, and the description is split into a number of packages, which we review in brief.
 \begin{zed}
 [Packages,basicPackage, IdentificationMetamodel, \\
 DesignationAndDefinitionMetamodel,RegistrationPackage, \\
@@ -298,16 +298,53 @@ The standard describes in detail that each identified item needs to have a scope
 
 We've added in the slot reference, however this is not relevant for identification discussion at present.
 
-
-
- 
-
-
-
-
-
 \subsubsection{ISO11179:3 Designation and Definition Metamodel}
+
+A DesignatableItem is one which can have zero to many description(s) or designation(s), in a particular language, and one which can have zero to many definitions, again these can be in various languages. Here the idea of a \emph{sign} is a replacement term for \emph{name}, extended to encompass the use of a accronym or icon to identify the item.
+\begin{schema}{DesignatableItem}
+  designation : sign \pfun Item \\
+  definition : Definition \pfun Item \\
+\end{schema}
+
+
+
 \subsubsection{ISO11179:3 Registration Package}
+
+The registration package supports registratin of a metadata item by an authorised person. 
+
+A RegisteredItem is an IdentifiedItem, it may also be a DesignatedItem and it may also be a Classifiable item. It can be either an AdministeredItem or an AttachedItem.
+
+
+\begin{zed}
+[Datetime, String, LanguageTag]
+\end{zed}
+\begin{schema}{AdministeredItem}
+changeDescription : String \\
+creationDate : Datetime \\
+lastChangeDate : Datetime\\
+\where
+rdfdatatype \neq RDFLangString
+\end{schema}
+
+\begin{schema}{AttachedItem}
+itemId: Id \\
+ownedBy : Id
+\end{schema}
+
+\begin{zed}
+RegisteredItem ::=  ad\ldata AdministeredItem \rdata |at\ldata AttachedItem \rdata
+\end{zed}
+
+
+\subsubsection{Concepts Package}
+
+
+
+\subsubsection{Binary Relations Package}
+
+
+\subsubsection{Data Description Package}
+
 
 
 
