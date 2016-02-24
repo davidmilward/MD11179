@@ -178,7 +178,62 @@ to promote:
 \item Re-use of the components \emph{of descriptions} of data.
 \end{itemize}
 ISO/IEC 11179 is in effect a standard for metadata-driven exchange of data in an heterogeneous environment, based on exact definitions of data. Interoperability isn't explicitly mentioned as aan aim, however these six aims/purposes are very close to being a description of a framework for interoperability for data and data components through the use of \emph{metadata}. There is no international standard which specifically addresses interoperability, although there are a number of accepted maturity models which address interoperability issues(NIEM, ECInterop) within the enterprise.  %%The MDI model framework which emerged from the Athena and Interop NoE (INTEROP, Athena) research projects have made progress in defining ways of implementing interoperability using model driven engineering concepts and ideas, and since ISO11179 is currently in use in both the Healthcare and Defence sectors we examine the core purposes of the standard to try and determine how we it achieves these purposes. %%
-The standard itself is not a specification for building a physical or logical metadata registry, but rather a set of semantic principles on how data relationships should be handled. We implement an ISO11179 conformant metadata registry using Model Based Engineering principles, and examine how use of these principles have helped achieved the purposes of ISO11179. 
+The standard itself is not a specification for building a physical or logical metadata registry, but rather a set of semantic principles on how data relationships should be handled. We implement an ISO11179 conformant metadata registry using Model Based Engineering principles, and examine how use of these principles have helped achieved the purposes of ISO11179. The biggest problem we had with the design of a metadata registry based on the ISO11179 standard was in interpreting the requirements in a way that ensured that we ended up with useful toolkit for handling metadata, much of which was specified using XML Schema, relational database schemas or very often in excel spreadsheets. The ISO11179 gives a robust treatment of the semantic aspects of metadata, and even provides illustrations of many aspects of the standard using UML 2.4.1, however translating that into a model based design was difficult for several reasons. Firstly the standard uses text and UML to provide a description, indicating that text takes precedance over UML where there is an ambiguity, or chance of mis-interpretation. Secondly the standard doesn't really discriminate between the model for metadata and the model for the registry itself, and while the two are closely related it is sometimes difficult to know whether the standard is refering to the metadata or the registry. For these reasons it was decided to translate the specification in the standard into a formal specification language in order to have a unambiguous basis on which to build a model for the registry. We used the Z specification language, it is a specification language based on set theory and first order logic and has been used to specify the W3C's Web Services Description Language~\cite{WSDL}.
+
+\subsection{Z Specification Language}
+
+The Z notation is a specification language built on first order logic and set theory. Z works with sets of objects that are classified by type, using both propositional and predicate logic. By using Z one is able to analyse both domain objects and computational constructs by linking the textual description and syntax to a formally defined semantics. 
+
+\subsection{Sets}
+Sets can be defined, and thus introduced into a specification, using a simple declaration. Sets can be defined and reasoned about by forming statements using propositional and predicate logic. Using standard propositional operators, such as `is element of', `is not an element of', `not', `or','and', `implies','if and only if','union','intersection': \begin{zed}\in, \notin, \lnot, \lor,\land, \implies, \iff, \cup, \cap,  \end{zed}\\ the Z specification language allows unambiguous statements and propositions to be made, and thus reasoning can be carried out on such a formal specification. This is extended to include first order logic with the use of quantifiers, which allow a single entity, or all entities to be identified, as follows: \begin{zed}  \exists y:Y | A \spot B \\ \forall x:X | P \spot Q   \end{zed}
+
+\subsection{Types}
+
+If we introduce a variable in Z we need to declare it's type. Everything introduced in Z needs to have a type and that type needs to be defined, each variable or expression can belong to only one type
+
+\subsection{Definitions}
+The simplest definition which declares a variable and makes a statement about it in the form of a predicate is called an \emph{axiomatic definition}, and it takes the form:
+
+	\begin{axdef}
+	Declaration
+	\where
+	Predicate
+	\end{axdef}
+
+Generic definitions are introduced as follows:
+
+\begin{gendef}[Params]
+	Declaration
+	\where
+	Predicate
+\end{gendef}
+
+\subsection{Relations}
+Z contains the constructs to deal with relations, normally by using the idea of \emph{domain} and \emph{range}. We can use this to make statements about people and things using relationships and relationship operators. 
+\begin{zed}
+drives = {George \mapsto renault}
+\end{zed} simply states that George drives a renault. We can assume therefore that George is in the \emph{domain} of the set of people that are driving cars, and that renault is in the set of cars that are driven. The Z notation allows us to specify \emph{functions} and to differentiate between types of functions: partial, total, bijections Z has a number of other operators which can be used to specify items included in a range or domain, so that quite complex rules can be declared for sets of variables. By using the various relational operators in Z we can arrive at a map of how relationships exist within a domain.
+
+\subsection{Schemas}
+
+The basic unit of specification in Z is not the set decalaration, but the \emph{schema} which allows variables to be introduces together with rules and predicates governing their structure and behaviour. The schema is used to structure and compose descriptions, allowing renaming and thus re-use, and most importantly allowing concerns to be grouped together thus making the mathematical formulation easier to read and reason with. It differs from an axiomatic definiton in that it has a name, and thus can be used as a component in another schema, which is a feature that enables composition and decomposition of components within the specification.  
+
+To illustrate this we declare sets of Identifiers (ID) and dataitems (DI):
+\begin{zed}
+ [ID, DI]
+ \end{zed}
+\begin{schema}{MetadataRegistry}
+ dataItems: \power DI\\
+ registry: ID \fun DI\\
+ \where
+ dataItems = \ran registry
+\end{schema}
+This schema is a formal description of a metadata registry which contains a set of dataItems which are linked to identities, the schema introduces the set of DataItems, and the registry as functional relationship between identities and dataitems such that the domain can be defined by the set of identities and the range can be defined by the set of dataitems. Clearly more variables, sets and constraints can be introduced, and indeed will be when we come to specify the metadata registry, however this demonstrates the way in which Z specifications are composed.
+
+
+\subsection{Object Z}
+Object Z is an extension to the Z notation which allows classes to be specified in what amounts to an extended schema. It is a useful extension for specifying object oriented constructs, although most specifications can be completed using the standard Z notation. We will introduce constructs as necessary during the course of the Z analysis. 
+
 
 
 
@@ -198,9 +253,65 @@ The ISO11179 standard as discussed describes a metamodel using text and UML 2.4.
 
 The standard continues to provide a detailed account of how metadata items are related within the metadata registry, for the purposes of brevity we will not repeat them all here, but we may refer back to specific parts of the standard where required.
 
+This section details a brief account of the specification of the ISO11179 registry using Z, it is not however the full specification which was too large to include in this paper. Also included is a partial specification of our DSML, again some but not all the Z specification is included.
+
+
+
+
 \subsection{Registry Overview}
 
-The metamodel or language for data we describe is informed by experience with Healthcare information systems \cite{DSMCR} and by the development of an open source Metadata Registry built around similar principles. The DSML has been built to help with data curation and creation in the Healthcare domain, and as such is the result of discussion with domain experts in this sector. The reason for designing this DSML  is that we seek a meta-language to be able handle hetrogeneous metadata stored using a variety of languages. It needs to be able to capture metadata, in particular a detailed description the data is stored in relational databases, XML Schemas, XML files based on XML Schemas, Excel files and object-oriented programs. It then needs to be able to automatically transform the data into a number of simple formats. To do this each dataset at an M1 level needs to be described at the M2 level, by doing this we can build a container which can hold the metadata collected at the M1 level.
+The metamodel or language for data we describe is informed by our experience with Healthcare information systems which is documented in a previous paper \cite{DSMCR} and by the development of an open source Metadata Registry built around similar principles. The DSML has been built to help with data curation and creation in the Healthcare domain, and as such is the result of discussion with domain experts in this sector. The reason for designing this DSML  is that we seek a meta-language to be able handle hetrogeneous metadata stored using a variety of languages. It needs to be able to capture metadata, in particular a detailed description the data is stored in relational databases, XML Schemas, XML files based on XML Schemas, Excel files and object-oriented programs. It then needs to be able to automatically transform the data into a number of simple formats. To do this each dataset at an M1 level needs to be described at the M2 level, by doing this we can build a container which can hold the metadata collected at the M1 level.
+
+The metamodel in ISO11179-3 is defined in terms of UML and text, and the description is split into a number of packages, which in turn are related.
+\begin{zed}
+[Packages,basicPackage, IdentificationMetamodel, \\
+DesignationAndDefinitionMetamodel,RegistrationPackage, \\
+ConceptsPackage, BinaryRelationsPackage, DataDescriptionsPackage]
+
+\end{zed}
+
+
+\subsubsection{ISO11179:3 Basic Package}
+This section introduces a number of basic types, some of which are already defined in Z (Boolean, Integer and Natural Range - or Natural Number), the others we can introduce as follows:
+\begin{zed}
+[ Date, Value, Sign, PostalAddress, String, Datetime, Text, Notation, PhoneNumber]
+\end{zed}
+This section introduces the basic types, together with a number of classes: ReferenceDocument, DocumentType, Contactm RegistrationAuthorityIdentifier, Individual, LanguageIdentification, Role, Organization.
+
+\subsubsection{ISO11179:3 Identification Metamodel }
+Here the subject of how to uniquely identify a metadata item is discussed, so classes of Namespace, ScopedIdentifier, IdentifiedItem and Slot are introduced.
+
+\begin{zed}
+  Path == \seq Name \\
+  [Item, ScopedId, Slot, Organization, Namespace]
+  \end{zed}
+
+
+The standard describes in detail that each identified item needs to have a scoped identifier, which in turn is unque within a particular namespace. A namespace is a unque name, which is used as part of a reference scheme, it is normally a URL such as : \emph{http://www.dictionary.com}. In terms of the specification we can describe a namespace simply as a sequence of Names (with a few other properties), and so a Scoped\_Identifier becomes relation between an identifier and namespace. This is shown in the IdentifiedItem schema below: 
+
+
+\begin{schema}{IdentifiedItem}
+  item : ScopedId \pfun Item \\
+  scopedId : Id \pfun Path \\
+  slot: Item \pfun Slot
+\end{schema}
+
+We've added in the slot reference, however this is not relevant for identification discussion at present.
+
+
+
+ 
+
+
+
+
+
+\subsubsection{ISO11179:3 Designation and Definition Metamodel}
+\subsubsection{ISO11179:3 Registration Package}
+
+
+
+\subsection{DSML Overview}
 
 The core entities in the metamodel are as follows:
 \begin{itemize}
@@ -209,6 +320,7 @@ The core entities in the metamodel are as follows:
 \item DataItem
 \item DataType
 \item DataConstraint
+\item Tag
 \end{itemize}
 
 \begin{figure}[h]
@@ -258,7 +370,7 @@ A piece of text can be interpreted in multiple ways, and thus:
   Text == \power Interpretation
 \end{zed}
 
-The language is a language of \emph{metadata} and it will normally sit within the context of a metadata registry or similar server artefact. The core entity in our new model is the \emph{ConceptItem} which is in effect an abstract entity from which most of the other entity derive. At its core is the idea that it represents a concept in some shape or form, and that we can make the name and text description originate from a vocabulary or terminology server. As an entity it can be related to any other entity in the registry using the Relationship artefact. Versioning control is handled through the use of a GUID, which has the added benfit of turning metadata into \emph{linked metadata} automatically. The Tag class allows any vocabulary or ontology element to be associated with any catalogue element. This ensures the import of standard ontologies into a metadata registry built around this metamodel.
+The language is a language of \emph{metadata} and it will normally sit within the context of a metadata registry or similar server artefact. The core entity in our new model is the \emph{ConceptItem} which is in effect an abstract entity from which most of the other entity derive. At its core is the idea that it represents a concept in some shape or form, and that we can make the name and text description originate from a vocabulary or terminology server. As an entity it can be related to any other entity in the registry using the Relationship artefact. Versioning control is handled through the use of a GUID, which has the added benfit of turning metadata into \emph{linked metadata} automatically. The Tag class allows any vocabulary or ontology element to be associated with any registry item. This ensures the import of standard ontologies into a metadata registry built around this metamodel.
 
 \begin{schema}{ConceptItem}
   id : Id \\
@@ -525,10 +637,7 @@ A related but not equivalent notion is that of the `scope' of a model. This is a
   ( contents~ \limg (item~m).imports \rimg )
 \end{schema}
 
-It will be convenient also to consider the inverse relational image of
-the closure of this function.  For any non-model item in the
-catalogue, this will return a reference to the unique model containing
-that item. 
+It will be convenient also to consider the inverse relational image of the closure of this function.  For any non-model item in the registry, this will return a reference to the unique datamodel containing that item. 
 
 \begin{schema}{Registry\_Structure\_Derivation\_Model}
   Registry\_Contents
@@ -562,8 +671,7 @@ A datamodel can import only other datamodels known to the registry.
   \forall m : datamodels \spot (item~m).imports \subseteq datamodels
 \end{schema}
 
-Every reference to a type must be to a type known to the catalogue: a
-known class, enumeration, or primitive. 
+Every reference to a type must be to a type known to the registry: a known dataclass, enumeration, or primitivetype. 
 
 \begin{schema}{Registry\_TypesDefined}
   Registry\_Contents
@@ -631,6 +739,19 @@ The last point is the querying of data itself, although this is not really a fun
 
 \section{Results}
 
+\subsection{Dataset Creation}
+
+
+
+
+
+\subsection{Dataset Curation}
+
+
+
+
+
+\subsection{Merging, linking and querying of Datasets}
 
 
 
