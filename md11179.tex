@@ -322,7 +322,8 @@ A RegisteredItem is an IdentifiedItem, it may also be a DesignatedItem and it ma
 changeDescription : String \\
 creationDate : Datetime \\
 lastChangeDate : Datetime\\
-\where
+\where  
+ 
 rdfdatatype \neq RDFLangString
 \end{schema}
 
@@ -330,18 +331,21 @@ rdfdatatype \neq RDFLangString
 itemId: Id \\
 ownedBy : Id
 \end{schema}
-
+ 
 \begin{zed}
 RegisteredItem ::=  ad\ldata AdministeredItem \rdata |at\ldata AttachedItem \rdata
 \end{zed}
 
 
 \subsubsection{Concepts Package}
+The purpose of the concepts package is to describe concepts and the various relations which hold between concepts, \emph{Ontologies} are supported by Concept\_Systems and Assertions. A \emph{concept} is a unit of knowledge created by a unique combination of characteristics. The standard mandates that a concept must be a member of at least one \emph{Concept\_System}, and that each \emph{Concept\_System} will act as the \emph{source} of each \emph{concept}. A concept system is a container of concepts which can be related by relations. A \emph{Concept\_System} will be described by on \emph{notation} attribute which is used to describe it. The \emph{notation} is defined as the formal syntax and semantics used in the  \emph{Concept\_System}, an example of which is given as OWL-DL XML notation, or XCL Common Logic.
 
+A \emph{Concept} can have zero to many \emph{Assertions} which are propositional sentences describing something that can be asserted. An Assertion must also have one or more \emph{Relations}, one or more \emph{Concepts} and be included in one or more \emph{Concept\_Systems}
 
+A \emph{Classifiable\_Item} is an item which may be classified into a hierarchical structure or partial order. This is accomplished by associating it with one or more \emph{Concepts}, which can optionally be associated with a \emph{Classification}. 
 
 \subsubsection{Binary Relations Package}
-
+The binary relations package attempts to model various aspects of relations in a UML class diagram. The Binary\_Relation class is derived from the Relation class, and has attributes of reflexivity, Symmetry and Transitivity, each of which are modelled by separate classes. In Z Binary relations are built into the language, and the properties listed may be expressed more easily using Z.
 
 \subsubsection{Data Description Package}
 
