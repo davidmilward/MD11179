@@ -263,14 +263,12 @@ The ISO11179 standard as discussed describes a metamodel using text and UML 2.4.
 
 The standard continues to provide a detailed account of how metadata items are related within the metadata registry, for the purposes of brevity we will not repeat them all here, but we may refer back to specific parts of the standard where required.
 
-This section details a brief account of the specification of the ISO11179 registry using Z, it is a partial speicifcation, and omits a lot of the details which are included in the original standard, also included is a partial specification of our DSML.
-
-
+This section details a brief account of the specification of the ISO11179 registry which was carried out using Z. From the resulting Z specification we have built the DSML on which we have built the metadata registry. The metadata registry has then been used for the creation, curation and management of a variety of datasets which we detail in the Results section.
 
 
 \subsection{Registry Overview}
 
-The metamodel or language for data we describe is informed by our experience with Healthcare information systems which is documented in a previous paper \cite{DSMCR} and by the development of an open source Metadata Registry built around similar principles. The DSML has been built to help with data curation and creation in the Healthcare domain, and as such is the result of discussion with domain experts in this sector. The reason for designing this DSML  is that we seek a meta-language to be able handle hetrogeneous metadata stored using a variety of languages. It needs to be able to capture metadata, in particular a detailed description the data is stored in relational databases, XML Schemas, XML files based on XML Schemas, Excel files and object-oriented programs. It then needs to be able to automatically transform the data into a number of simple formats. To do this each dataset at an M1 level needs to be described at the M2 level, by doing this we can build a container which can hold the metadata collected at the M1 level.
+The metamodel or language for data we describe is informed by our experience with Healthcare information systems which is documented in a previous paper \cite{DSMCR} and by the development of an open source Metadata Registry built around similar principles. The DSML has been built to help with data curation and creation in the Healthcare domain, and as such is the result of discussion with domain experts in this sector. The reason for designing this DSML is that we seek a meta-language to be able handle hetrogeneous metadata stored using a variety of languages. It needs to be able to capture metadata, in particular a detailed description the data is stored in relational databases, XML Schemas, XML files based on XML Schemas, Excel files and object-oriented programs. It then needs to be able to automatically transform the data into a number of simple formats. To do this each dataset at an M1 level needs to be described at the M2 level, by doing this we can build a container which can hold the metadata collected at the M1 level.
 
 The metamodel in ISO11179-3 is defined in terms of UML and text, and the description is split into a number of packages, which we review in brief.
 \begin{zed}
@@ -362,7 +360,7 @@ A \emph{Conceptual\_Domain} is a set of \emph{value meanings}. A conceptual doma
 
 A value domain is a collection of permissible values, it provides representation for a data element concept, but provides no implication over meanings or associations. Permissible values are designations or bindings of signs to their corresponding value meanings. 
 
-Value meaning is defined as \emph{``semantic content of possible values''}
+Value meaning is defined as \emph{``semantic content of possible values''}, so we can interprete a  \emph{Conceptual\_Domain} as being a set of semantics of possible values. In the example given we see that the semantics of a \emph{Conceptual\_Domain} is given by the relations between the \emph{Conceptual\_Domain}, in this case \emph{Country} and the \emph{Person}.
 
 An example of a conceptual domain and a set of value domains is ISO3166, whereby the conceptual domain is the names of countries which has 7 different value domains, one for each representation (short French, Short English, etc).
 
@@ -387,21 +385,23 @@ dataElementConcept: property \pfun objectClass\\
 
 
 
-
-
-
-
-
 \subsection{DSML Overview}
 
 The core entities in the metamodel are as follows:
 \begin{itemize}
-\item DataModel
-\item DataClass
-\item DataItem
-\item DataType
-\item DataConstraint
+\item ConceptItem
 \item Tag
+\item Relationship
+\item DataModel
+\item DataConstraint
+\item DataItem
+\item DataClass
+\item DataElement
+\item DataType
+\item Enum
+\item Enumeration
+\item ReferenceType
+\item PrimitiveType
 \end{itemize}
 
 \begin{figure}[h]
