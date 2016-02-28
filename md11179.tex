@@ -348,13 +348,34 @@ A \emph{Classifiable\_Item} is an item which may be classified into a hierarchic
 The binary relations package attempts to model various aspects of relations in a UML class diagram. The Binary\_Relation class is derived from the Relation class, and has attributes of reflexivity, Symmetry and Transitivity, each of which are modelled by separate classes. In Z Binary relations are built into the language, and the properties listed may be expressed more easily using Z.
 
 \subsubsection{Data Description Package}
-A \emph{Conceptual\_Domain} is a set of \emph{value meanings}. A conceptual domain can faciliatate the mapping of equivalent values of two or more value domains.
+A \emph{Conceptual\_Domain} is a set of \emph{value meanings}. A conceptual domain can facilatate the mapping of equivalent values of two or more value domains. It might also be used in several \emph{value domains} that share the \emph{conceptual domain} In the standard this is explained with reference to ISO3166 the standard for country codes, so the \emph{conceptual domain} is \emph{countries of the world}. The three letter and two letter codes in ISO3166 are therefore different value domains. The standard then goes on to explain that a conceptual domain may be used by several \emph{data element concepts} for example, a person's country of citizenship, a persons country of residence and a person's country of birth.
 
-A value domain is a collection of permissible values, it provides representation for a data element concept, but provides no implication over meanings or associations. Permissible values are designations or bindings of signs to their corresponding value meanings.
+A value domain is a collection of permissible values, it provides representation for a data element concept, but provides no implication over meanings or associations. Permissible values are designations or bindings of signs to their corresponding value meanings. 
 
-An example of a conceptual domain and a set of value domains is ISO3166, whereby the conceptual domain is the names of countries which has 7 different value domains, on for each representation (short Frnech, Short English, etc).
+Value meaning is defined as \emph{``semantic content of possible values''}
 
-A Value domain shall participate in the association: a value\_domain\_meaning in exactly one \emph{Conceptual\_Domain} provides meaning to the value domain.
+An example of a conceptual domain and a set of value domains is ISO3166, whereby the conceptual domain is the names of countries which has 7 different value domains, one for each representation (short French, Short English, etc).
+
+A Value domain shall participate in the association: a value\_domain\_meaning in exactly one \emph{Conceptual\_Domain} provides meaning to the value domain. Elsewhere the standard defines value domains as collections of mappings between value meanings and values.
+
+A \emph{Data\_Element} is a class which models a data element, which is an atomic unit of data, an example of which could be a column in a database table, or a field in a record, or an attribute of a java class.
+
+
+\begin{zed}
+[dataElement, valueDomain, valueMeaning, dataElementConcept, \\ concept, conceptualDomain]]
+\end{zed}
+\begin{zed}
+dataElementMeaning: dataElement \pfun dataElementConcept\\
+dataElementDomain: dataElement \pfun valueDomain
+\end{zed}
+
+A \emph{Data\_Element\_Concept} class is a class which models a data element concept, which is a concept that is an \emph{association} of a property and an object class. In Z we can model an association as a relation and this satate that:
+
+\begin{zed}
+dataElementConcept: property \pfun objectClass\\
+\end{zed}
+
+
 
 
 
