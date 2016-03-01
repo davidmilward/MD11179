@@ -126,7 +126,7 @@ In this paper we present an ISO11179 metadata registry using a data-oriented Dom
 
 \section{Introduction}
 
-This paper describes the process of implementing an standard for metadata management and explores what conformance to to such a standard means in practice. The process employs a mix of formal specification, metamodelling and creating a Domain Specific Modelling Language (DSML). With some further effort, this DSML has has resulted in an an in-use to manage clinical meta data. Several interesting challenges are addressed; including the formalisation of an ISO standard in Z, to add precise semantics and the creation of an intermediate model-driven formalism to support the creation of a practical result: a tangible applications for metadata management.
+This paper describes the process of defining a metalanguage for use in a metadata registry using Model Based Engineering.  Initially the requirement came from the requirement for researchers to curate datasets for clinical usage. Previous work on implementing metadata registries conforming to ISO11179 informed this exercise, so whilst the core requirement came from users, an attempt was made to adher to ISO11179 in the process in the hope of making the metadata registry interoperable with other ISO11179 comformant registries. To achieve this we address several challenges including the formalisation of an ISO standard in Z and the creation of an intermediate model-driven formalism to support the creation of a practical result: a tangible applications for metadata management.
 
 ISO11179 is an internationally recognised standard for metadata registries. Metadata registries are used within organisations to ensure critical data is used consistently. In recent times, the amount and complexity of data available to organizations has exploded and standards such as ISO11179 have become essential. Yet, there are several functional areas of the standard that are ambiguous and open to interpretation and the standard only partly formalises metadata management processes. `High-level' processes of a registry are described, but defined in natural language, so have been implemented in a variety of ways. For example the standard discusses publication and versioning of metadata and states that models must not be edited after publication but does not specify what this means can be achieved in practice. %(Seyyed: @David could you check this last claim is correct?)
 
@@ -162,17 +162,13 @@ The term \emph{Domain Specific Language} is used to talk about a language which 
 The term DSL is a general term and covers many different types of language.  For our purposes here we consider two main aspects of software analysis and design, the first is the modelling of the domain and the second is engineering an efficient programming language to express these models.These two aspects are often merged, however the two aspects are sometimes treated separately as with the layered modelling approach taken by Latry et al~\cite{latry2006processing}. 
 
 
-\subsubsection{Domain Specific Modelling Language(DSML)}
+\subsubsection{Domain Specific Modelling and Programming Languages}
 
-A Domain Specific Modelling Language is one that is purely targeting the problem domain, in that it describes problems and solutions in domain terms, and provides a language which domain experts can understand and implement within their domain. In this regard we are considering the domain of managing large datasets, ontologies and classification systems, and the domain experts we are considering are those who will create and edit these datasets. 
+A Domain Specific Modelling Language (DSML) is one that is purely targeting the problem domain, in that it describes problems and solutions in domain terms, and provides a language which domain experts can understand and implement within their domain. In this regard we are considering the domain of managing large datasets, ontologies and classification systems, and the domain experts we are considering are those who will create and edit these datasets. A Domain Specific Programming language(DSPL) is concerned with how to implement a suitable language using a general purpose programming language(GPL), frameworks, aspects, etc. There are no real rules to developing a DSPL, and it maybe that developing a DSPL is simply a stage in the development of the DSL, or it may be a module within the DSL. For the most part we haven't defined a DSPL for this project, the implementation has been carried out using the Groovy language, or with the XTend/Java toolkit in Eclipse. 
 
-\subsubsection{Domain Specific Programming Language(DSPL)}	
-A Domain Specific Programming language is concerned with how to implement a suitable language using a general purpose programming language(GPL), frameworks, aspects, etc. There are no real rules to developing a DSPL, and it maybe that developing a DSPL is simply a stage in the development of the DSL, or it may be a module within the DSL. For the most part we haven't defined a DSPL for this project, the implementation has been carried out using the Groovy language. 
+\subsubsection{Platform Independent and Specific Implementation}
+In the Model Driven Architecture (MDA)~\cite{frankel2003model} of the OMG models are viewed as being either \textbf{Platform Independent Models(PIM)} or \textbf{Platform Specific Models (PSM)}, a division which is similar in concept, but not identical to the DSML/DSPL split previously described. The idea is that a PIM should model the problem and be independent of any computer operational issues, in this way a model in one language can be transformed to another language without any reference being made to platform-specific concerns such as memory usage, persistance constraints, big-endianness etc.
 
-\subsubsection{Platform Independent Implementation(PIM)}
-
-**********
-\subsubsection{Platform Specific Implementation(PIM)}
 
 \subsection{ISO11179}
 
@@ -318,7 +314,7 @@ A DesignatableItem is one which can have zero to many description(s) or designat
 
 \subsubsection{ISO11179:3 Registration Package}
 
-The registration package supports registratin of a metadata item by an authorised person. 
+The registration package supports registration of a metadata item by an authorised person. 
 
 A RegisteredItem is an IdentifiedItem, it may also be a DesignatedItem and it may also be a Classifiable item. It can be either an AdministeredItem or an AttachedItem.
 
@@ -353,39 +349,70 @@ A \emph{Concept} can have zero to many \emph{Assertions} which are propositional
 A \emph{Classifiable\_Item} is an item which may be classified into a hierarchical structure or partial order. This is accomplished by associating it with one or more \emph{Concepts}, which can optionally be associated with a \emph{Classification}. 
 
 \subsubsection{Binary Relations Package}
-The binary relations package attempts to model various aspects of relations in a UML class diagram. The Binary\_Relation class is derived from the Relation class, and has attributes of reflexivity, Symmetry and Transitivity, each of which are modelled by separate classes. In Z Binary relations are built into the language, and the properties listed may be expressed more easily using Z.
+The binary relations package attempts to model various aspects of relations in a UML class diagram. The Binary\_Relation class is derived from the Relation class, and has attributes of reflexivity, Symmetry and Transitivity, each of which are modelled by separate classes. In Z Binary relations are built into the language, and so many of the properties listed may be expressed more easily using Z.
 
 \subsubsection{Data Description Package}
-A \emph{Conceptual\_Domain} is a set of \emph{value meanings}. A conceptual domain can facilatate the mapping of equivalent values of two or more value domains. It might also be used in several \emph{value domains} that share the \emph{conceptual domain} In the standard this is explained with reference to ISO3166 the standard for country codes, so the \emph{conceptual domain} is \emph{countries of the world}. The three letter and two letter codes in ISO3166 are therefore different value domains. The standard then goes on to explain that a conceptual domain may be used by several \emph{data element concepts} for example, a person's country of citizenship, a persons country of residence and a person's country of birth.
+This package is probably the most important in the standard because it details how the metadata registry should handle the core data, in short how data held in the registry needs to be described. However it is also the most difficult, and writing the specification resulted in a number of potential ambiguities which arise from the fact that the description provides both text and UML to describe the package, using UML implies that the description is at the M1 level, however it is not since we are describe how to store metadata, in short we are describing metadata. This puts the description firmly in the M2 or meta-meta-language abstraction level, which means a direct translation of the UML class diagrams to code is not what is intended in this standard.
 
-A value domain is a collection of permissible values, it provides representation for a data element concept, but provides no implication over meanings or associations. Permissible values are designations or bindings of signs to their corresponding value meanings. 
+The start of the section describes a high-level set of relationships between the following classes: Data\_Element\_Concept, a Conceptual\_Domain, a Data\_Element and a Value\_Domain. 
 
-Value meaning is defined as \emph{``semantic content of possible values''}, so we can interprete a  \emph{Conceptual\_Domain} as being a set of semantics of possible values. In the example given we see that the semantics of a \emph{Conceptual\_Domain} is given by the relations between the \emph{Conceptual\_Domain}, in this case \emph{Country} and the \emph{Person}.
 
-An example of a conceptual domain and a set of value domains is ISO3166, whereby the conceptual domain is the names of countries which has 7 different value domains, one for each representation (short French, Short English, etc).
 
-A Value domain shall participate in the association: a value\_domain\_meaning in exactly one \emph{Conceptual\_Domain} provides meaning to the value domain. Elsewhere the standard defines value domains as collections of mappings between value meanings and values.
+
+
+If we introduce some of these items:
+\begin{zed}
+[dataElement, valueDomain, valueMeaning, dataElementConcept, \\ concept, conceptualDomain]
+\end{zed}
+We can then identify some of the relations between them:
+
+\begin{zed}
+dataElementConceptDomain: dataElementConcept \pfun conceptualDomain\\
+dataElementMeaning: dataElement \pfun dataElementConcept\\
+dataElementValueDomain: dataElement \pfun valueDomain\\
+valueDomainMeaning: valueDomain \pfun conceptualDomain
+\end{zed}
+
+
+
+There are some details which are hard to represent, for instance the fact that a \emph{Conceptual\_Domain} is described by a UML class which is a child class of \emph{Concept} and also is given the definition in text that it is a \emph{set of value meanings}. Value meanings are also decribed as sub-types of the class \emph{Concept} in this section, however no real account of the differences of the various sub-types of \emph{Concept} are provided.  A conceptual domain can facilatate the mapping of equivalent values of two or more value domains. It might also be used in several \emph{value domains} that share the \emph{conceptual domain}. In the standard this is explained with reference to ISO3166 the standard for country codes, so the \emph{conceptual domain} is \emph{countries of the world}. The three letter and two letter codes in ISO3166 are therefore different value domains. The standard then goes on to explain that a conceptual domain may be used by several \emph{data element concepts} for example, a person's country of citizenship, a persons country of residence and a person's country of birth. 
+
+A value domain is a collection of permissible values, it provides representation for a data element concept, but provides no implication over meanings or associations. Permissible values are designations or bindings of signs to their corresponding value meanings. The idea of a datatype is introduced in this section, but as an attribute of a value domain, together with the idea of a \emph{unit\_of\_measure}, a \emph{format}, and a \emph{maximum\_character\_quality}. Value meaning is defined as \emph{``semantic content of possible values''}, so we can interprete a  \emph{Conceptual\_Domain} as being a set of semantics of possible values. In the example given we see that the semantics of a \emph{Conceptual\_Domain} is given by the relations between the \emph{Conceptual\_Domain}, in this case \emph{Country} and the \emph{Person}.
+
+An example of a conceptual domain and a set of value domains is ISO3166, whereby the conceptual domain is the names of countries which has 7 different value domains, one for each representation (short French, Short English, etc).  A Value domain shall participate in the association: a value\_domain\_meaning in exactly one \emph{Conceptual\_Domain} provides meaning to the value domain. Elsewhere the standard defines value domains as collections of mappings between value meanings and values.
 
 A \emph{Data\_Element} is a class which models a data element, which is an atomic unit of data, an example of which could be a column in a database table, or a field in a record, or an attribute of a java class.
 
 
-\begin{zed}
-[dataElement, valueDomain, valueMeaning, dataElementConcept, \\ concept, conceptualDomain]]
-\end{zed}
-\begin{zed}
-dataElementMeaning: dataElement \pfun dataElementConcept\\
-dataElementDomain: dataElement \pfun valueDomain
-\end{zed}
 
-A \emph{Data\_Element\_Concept} class is a class which models a data element concept, which is a concept that is an \emph{association} of a property and an object class. In Z we can model an association as a relation and this satate that:
+A \emph{Data\_Element\_Concept} class is a class which models a data element concept, which is a concept that is an \emph{association} of a property and an object class. In Z we can model an association as a relation and this states that:
 
 \begin{zed}
 dataElementConcept: property \pfun objectClass\\
 \end{zed}
 
+An \emph{Object Class} is described as being a \emph{concept} that represents a set of ideas, abstractions or things in the real world that can be identified with explicit boundaries and meaning. We interprete this is as being the same as the notion of \emph{Class} in the MBE world. It is one of the only entities which is able to collect, contain or group data elements, the other entity that is able to group elements is a Classification.
+
+The specification is over 240 pages long, and this section 11 is over 15 pages so rather than list the specification here we describe the main aspects on which the DSML has been based. The data description package describes the way in which the concepts behind the data are mapped, however many of the ideas contained here are relevent to and concern themselves with aspects of the conceptual model which cannot be derived automatically from a dataset.   Also by further analysis of the Identification specification we find that one of the easiest ways to identify and version data elements is using the a series of paths or strings which identify the \emph{group} which the data element is a component of. This feature makes \emph{Model} a first class entity in our metadata registry design
+
+
+\subsection{Metadata Registry Requirements}
+
+As well as the aim of building an ISO11179 metadata registry we had a number of practical requirements to fullfil, which we list below:
+\begin{itemize}
+\item To identify metadata elements
+\item To identify components built from metadata elements
+\item To create new datasets from a new and existing metadata elements
+\item To curate existing datasets efficiently and to co-ordinate between different interest groups during this process.
+\item To generate software artefacts from the core identifiable metadata elements.
+\end{itemize}
+One of the core problems facing hospital researchers is the problem of recording data for clinical trials. There are a number of utilities which can help in this regard, however many of them do not allow automatic conformance to existing datasets. For instance the UK NHS publishes a \emph{Cancer Outcomes and Services Dataset} which is managed and updated every 3 months or so by National Cancer Intelligence Network; the dataset is published as both an excel spreadsheet and as an XSD file. However there is no easy way to identify data elements, manage them and compare them to other data elements or data components in other models. Many researchers do not use COSD as their sole source of data when looking at research datasets, instead they will consult it, compare it with a local dataset, perhaps look at the datasets which have been used on similar studies and then after collaberation with colleagues will define their own dataset for the project that they are working on.
+
 
 
 \subsection{DSML Overview}
+
+The standard states that the diagram can be partitioned into two segments: the conceptual and the representational. The representational part is the part that concerns us in building a metadata registry, we can build the conceptual details using ECore or using our language.
 
 The core entities in the metamodel are as follows:
 \begin{itemize}
