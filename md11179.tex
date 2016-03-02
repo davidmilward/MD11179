@@ -189,41 +189,30 @@ The standard itself is not a specification for building a physical or logical me
 \subsection{Z Specification Language}
 
 The Z notation is a specification language built on first order logic and set theory. Z works with sets of objects that are classified by type, using both propositional and predicate logic. By using Z one is able to analyse both domain objects and computational constructs by linking the textual description and syntax to a formally defined semantics. 
-
-\subsection{Sets}
+\subsubsection{Sets}
 Sets can be defined, and thus introduced into a specification, using a simple declaration. Sets can be defined and reasoned about by forming statements using propositional and predicate logic. Using standard propositional operators, such as `is element of', `is not an element of', `not', `or','and', `implies','if and only if','union','intersection': \begin{zed}\in, \notin, \lnot, \lor,\land, \implies, \iff, \cup, \cap,  \end{zed}\\ the Z specification language allows unambiguous statements and propositions to be made, and thus reasoning can be carried out on such a formal specification. This is extended to include first order logic with the use of quantifiers, which allow a single entity, or all entities to be identified, as follows: \begin{zed}  \exists y:Y | A \spot B \\ \forall x:X | P \spot Q   \end{zed}
-
-\subsection{Types}
-
-If we introduce a variable in Z we need to declare it's type. Everything introduced in Z needs to have a type and that type needs to be defined, each variable or expression can belong to only one type
-
-\subsection{Definitions}
+\subsubsection{Types}
+If we introduce a variable in Z we need to declare it's type. Everything introduced in Z needs to have a type and that type needs to be defined, each variable or expression can belong to only one type.
+\subsubsection{Definitions}
 The simplest definition which declares a variable and makes a statement about it in the form of a predicate is called an \emph{axiomatic definition}, and it takes the form:
-
 	\begin{axdef}
 	Declaration
 	\where
 	Predicate
 	\end{axdef}
-
 Generic definitions are introduced as follows:
-
 \begin{gendef}[Params]
 	Declaration
 	\where
 	Predicate
 \end{gendef}
-
-\subsection{Relations}
+\subsubsection{Relations}
 Z contains the constructs to deal with relations, normally by using the idea of \emph{domain} and \emph{range}. We can use this to make statements about people and things using relationships and relationship operators. 
 \begin{zed}
 drives = {George \mapsto renault}
 \end{zed} simply states that George drives a renault. We can assume therefore that George is in the \emph{domain} of the set of people that are driving cars, and that renault is in the set of cars that are driven. The Z notation allows us to specify \emph{functions} and to differentiate between types of functions: partial, total, bijections Z has a number of other operators which can be used to specify items included in a range or domain, so that quite complex rules can be declared for sets of variables. By using the various relational operators in Z we can arrive at a map of how relationships exist within a domain.
-
-\subsection{Schemas}
-
+\subsubsection{Schemas}
 The basic unit of specification in Z is not the set decalaration, but the \emph{schema} which allows variables to be introduces together with rules and predicates governing their structure and behaviour. The schema is used to structure and compose descriptions, allowing renaming and thus re-use, and most importantly allowing concerns to be grouped together thus making the mathematical formulation easier to read and reason with. It differs from an axiomatic definiton in that it has a name, and thus can be used as a component in another schema, which is a feature that enables composition and decomposition of components within the specification.  
-
 To illustrate this we declare sets of Identifiers (ID) and dataitems (DI):
 \begin{zed}
  [ID, DI]
@@ -235,13 +224,8 @@ To illustrate this we declare sets of Identifiers (ID) and dataitems (DI):
  dataItems = \ran registry
 \end{schema}
 This schema is a formal description of a metadata registry which contains a set of dataItems which are linked to identities, the schema introduces the set of DataItems, and the registry as functional relationship between identities and dataitems such that the domain can be defined by the set of identities and the range can be defined by the set of dataitems. Clearly more variables, sets and constraints can be introduced, and indeed will be when we come to specify the metadata registry, however this demonstrates the way in which Z specifications are composed.
-
-
-\subsection{Object Z}
+\subsubsection{Object Z}
 Object Z is an extension to the Z notation which allows classes to be specified in what amounts to an extended schema. It is a useful extension for specifying object oriented constructs, although most specifications can be completed using the standard Z notation. We will introduce constructs as necessary during the course of the Z analysis. 
-
-
-
 
 
 \section{Design of an ISO11179 Metadata Registry}
@@ -259,10 +243,7 @@ The ISO11179 standard as discussed describes a metamodel using text and UML 2.4.
 
 The standard continues to provide a detailed account of how metadata items are related within the metadata registry, for the purposes of brevity we will not repeat them all here, but we may refer back to specific parts of the standard where required.
 
-This section details a brief account of the specification of the ISO11179 registry which was carried out using Z. From the resulting Z specification we have built the DSML on which we have built the metadata registry. The metadata registry has then been used for the creation, curation and management of a variety of datasets which we detail in the Results section.
-
-
-\subsection{Registry Overview}
+This section details a brief account of the specification of the ISO11179 registry which was carried out using Z. From the resulting Z specification we have built the DSML on which we have built the metadata registry. The metadata registry has then been used for the creation, curation and management of a variety of datasets which we detail in the Results section. 
 
 The metamodel or language for data we describe is informed by our experience with Healthcare information systems which is documented in a previous paper \cite{DSMCR} and by the development of an open source Metadata Registry built around similar principles. The DSML has been built to help with data curation and creation in the Healthcare domain, and as such is the result of discussion with domain experts in this sector. The reason for designing this DSML is that we seek a meta-language to be able handle hetrogeneous metadata stored using a variety of languages. It needs to be able to capture metadata, in particular a detailed description the data is stored in relational databases, XML Schemas, XML files based on XML Schemas, Excel files and object-oriented programs. It then needs to be able to automatically transform the data into a number of simple formats. To do this each dataset at an M1 level needs to be described at the M2 level, by doing this we can build a container which can hold the metadata collected at the M1 level.
 
@@ -274,21 +255,134 @@ ConceptsPackage, BinaryRelationsPackage, DataDescriptionsPackage]
 
 \end{zed}
 
+ISO11179-3sect1 describes the scope of the documents, and states that sections 5-11 form a specification of a \emph{Platform Independent Model} for a metadata registry. Section 12 describes basic attributes for metadata items in a situation where a full metadata registry implementation is not available or possible. Section 2 deals with normative references, the only indispensible referenced document listed is ISO11179-6. Section 3 introduces terms, we will make reference to this section where needed in the course of this specification.Section 4 deals with conformance and is not directly relevent to the work here.
 
-\subsubsection{ISO11179:3 Basic Package}
+We start with section 5 which details the overview of the packages involved with the MDR, indeed it is described as a metamodel for the infomraiton model of a MDR. This metamodel is terms the \emph{Registry Metamodel} and is specified as a \emph{conceptual data model - one that describes how relevant information is structured in the natural world, in other words how the human mind is accustomed to thinking of the information}. It must be observed that the previous statement is factually incorrect and demonstrates the enormous arrogance of the ISO11179 committee members, who demonstrate very little understanding of current neuro-science, especially recent insights into how the human mind is or is not accustomed to handling information, the only reason to continue with this twaddle is to demonstrate once and for all what an inadequate document it is.
+
+Section 5 continues by stating that there is no one-to-one match between attributes of the metamodel and fields, columns or other database artefacts, and it emphasises the fact that the physical implementation may or may not be distributes, implemented using databases, XML, RDF/OWL or any other related information processing systems. However it does go on to state that minimum and maximum constraints of attributes should be enforced at all times, and that constraints on minimum occurences are to be enforced when the registration status of the metadata item is "recorded" or higher. It would seem that the latter statement is overruled by the former statement, so it is ignored for this specification.
+
+The standard uses the term \emph{metamodel construct} to refer to the UML model constructs or artefacts being used, and \emph{metadata object} for the model being specified, UML 2.4.1 is used in the version being examined. The metamodel is split into six packages and the dependencies between them are illustrated in Figue ~\ref{fig:pack}, some are further subdivided into "regions" (although this is not a formal UML term).
+
+\begin{figure}[h]
+\includegraphics[width=1.0\textwidth,natwidth=610,natheight=642]{ISOPack}
+\caption{Data Description Model} 
+\label{fig:pack}
+\end{figure}
+
+There are 3 types of dependency listed : subclassing between packages, relationships and referenced datatypes.
+
+A metadata item may be "extended by" any one of six related stereotypes, based on classes which are covered in later sections, they are \emph{Identified\_Item}, \emph{Registered\_Item},\emph{Administered\_Item},\emph{Attached\_Item},\emph{Designatable\_Item},\emph{Classifiable\_Item}.
+\begin{zed}
+[Scoped\_Identifier,metadataItem,Designation,Definition,Concept,Submisson\_Record,\\
+Stewardship\_Record,Registration\_Authority,Administered\_Record]
+\end{zed}
+
+\begin{schema}{IdentifiedMetaDataItem}
+identification\_association: metadataItem \pfun Scoped\_Identifier \\
+\where
+ \#identification\_association \leq 1 \\
+\end{schema}
+
+\begin{schema}{DesignatedMetaDataItem}
+item\_designation\_association: metadataItem \pfun Designation \\
+\where
+ \#item\_designation\_association \leq 1 \\
+\end{schema}
+
+\begin{schema}{DefinedMetaDataItem}
+item\_definition\_association: metadataItem \pfun Definition \\
+\where
+ \#item\_definition\_association \leq 1 \\
+\end{schema}
+
+\begin{schema}{ConceptMetaDataItem}
+classification\_association: metadataItem \pfun Concept \\
+\where
+ \#classification\_association \leq 1 \\
+\end{schema}
+
+\begin{schema}{RegisteredMetaDataItem}
+identification\_association : metadataItem \pfun Scoped\_Identifier \\
+submission\_association : metadataItem \pfun Submisson\_Record \\
+\where
+ \#identification\_association \leq 1 \\
+ \#submission\_association \leq 1 \\
+\end{schema}
+
+\begin{schema}{AdministeredMetaDataItem}
+identification\_association: metadataItem \pfun Scoped\_Identifier \\
+submission\_association: metadataItem \pfun Submisson\_Record \\
+stewardship\_association: metadataItem \pfun Stewardship\_Record \\
+registration\_association: metadataItem \pfun Registration\_Authority \\
+attachment\_association: metadataItem \pfun Administered\_Record \\
+\where
+ \#stewardship\_association\leq 1 \\
+ \#registration\_association \leq 1 \\
+ \#attachment\_association = 0 \\
+ \#identification\_association \leq 1 \\
+\end{schema}
+
+\begin{schema}{AttachedMetaDataItem}
+stewardship\_association: metadataItem \pfun Stewardship\_Record \\
+attachment\_associations: metadataItem \pfun Administered\_Record \\
+\where
+ \#attachment\_associations \leq 1 \\
+ \#stewardship\_association = 0 \\
+\end{schema}
+
+
+A metadataItem may be extended with \emph{Slots} which allow the metadataItems to be extended with custom attributes, relationships, classes and even complete new packages.
+\begin{zed}
+[String]
+\end{zed}
+\begin{schema}{Slot}
+  key: \nat \\
+  value: String \\
+\end{schema}
+
+\begin{schema}{ExtendedMetaDataItem}
+	slot\_association: metadataItem \pfun Slot \\
+\where
+ 	\#slot\_association \geq 0 \\
+\end{schema}
+
+  
+
+\subsection{ISO11179:3 Basic Package}
+
 This section introduces a number of basic types, some of which are already defined in Z (Boolean, Integer and Natural Range - or Natural Number), the others we can introduce as follows:
 \begin{zed}
-[ Date, Value, Sign, PostalAddress, String, Datetime, Text, Notation, PhoneNumber]
+[ Date, Value, Sign, PostalAddress, Datetime,  Text,Notation, PhoneNumber]
 \end{zed}
-This section introduces the basic types, together with a number of classes: ReferenceDocument, DocumentType, Contactm RegistrationAuthorityIdentifier, Individual, LanguageIdentification, Role, Organization.
+This section introduces the basic types, together with a number of classes: ReferenceDocument, DocumentType, Contact RegistrationAuthorityIdentifier, Individual, LanguageIdentification, Role, Organization.
 
-\subsubsection{ISO11179:3 Identification Metamodel }
+
+subsubsection{Classes overview}
+
+
+\begin{class}{Reference\_Document}
+\also
+identifier : String \\
+document\_type : Document\_Type \\
+language : Language\_Identification \\
+notation: Notation \\
+title : Text\\
+provider: Organization\\
+url: Strin
+\end{class}
+
+
+
+
+\subsection{ISO11179:3 Identification Metamodel }
 Here the subject of how to uniquely identify a metadata item is discussed, so classes of Namespace, ScopedIdentifier, IdentifiedItem and Slot are introduced.
 
 \begin{zed}
+  [Item, ScopedId, Organization, Namespace, Name, Term, Id]
+\end{zed}
+\begin{zed}
   Path == \seq Name \\
-  [Item, ScopedId, Slot, Organization, Namespace]
-  \end{zed}
+\end{zed}
 
 
 The standard describes in detail that each identified item needs to have a scoped identifier, which in turn is unque within a particular namespace. A namespace is a unque name, which is used as part of a reference scheme, it is normally a URL such as : \emph{http://www.dictionary.com}. In terms of the specification we can describe a namespace simply as a sequence of Names (with a few other properties), and so a Scoped\_Identifier becomes relation between an identifier and namespace. This is shown in the IdentifiedItem schema below: 
@@ -306,13 +400,14 @@ We've added in the slot reference, however this is not relevant for identificati
 
 A DesignatableItem is one which can have zero to many description(s) or designation(s), in a particular language, and one which can have zero to many definitions, again these can be in various languages. Here the idea of a \emph{sign} is a replacement term for \emph{name}, extended to encompass the use of a accronym or icon to identify the item.
 \begin{schema}{DesignatableItem}
-  designation : sign \pfun Item \\
-  definition : Definition \pfun Item \\
+  designation : Sign \pfun Item \\
+  definition : Text \pfun Item \\
 \end{schema}
 
 
 
 \subsubsection{ISO11179:3 Registration Package}
+
 
 The registration package supports registration of a metadata item by an authorised person. 
 
