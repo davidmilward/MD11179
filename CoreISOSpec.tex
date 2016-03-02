@@ -121,7 +121,6 @@ In this paper we present an ISO11179 metadata registry using a data-oriented Dom
 \end{abstract}
 
 \keywords{...}
-
 \noindent
 
 \section{Introduction}
@@ -230,18 +229,42 @@ attachment\_associations: metadataItem \pfun Administered\_Record \\
 
 
 A metadataItem may be extended with \emph{Slots} which allow the metadataItems to be extended with custom attributes, relationships, classes and even complete new packages.
+\begin{zed}
+[String]
+\end{zed}
+\begin{schema}{Slot}
+  key: \nat \\
+  value: String \\
+\end{schema}
+
+\begin{schema}{ExtendedMetaDataItem}
+	slot\_association: metadataItem \pfun Slot \\
+\where
+ 	\#slot\_association \geq 0 \\
+\end{schema}
+
+  
 
 \subsection{ISO11179:3 Basic Package}
 
 This section introduces a number of basic types, some of which are already defined in Z (Boolean, Integer and Natural Range - or Natural Number), the others we can introduce as follows:
 \begin{zed}
-[ Date, Value, Sign, PostalAddress, String, Datetime, Text, Notation, PhoneNumber]
+[ Date, Value, Sign, PostalAddress, Datetime,  Text,Notation, PhoneNumber]
 \end{zed}
-This section introduces the basic types, together with a number of classes: ReferenceDocument, DocumentType, Contactm RegistrationAuthorityIdentifier, Individual, LanguageIdentification, Role, Organization.
+This section introduces the basic types, together with a number of classes: ReferenceDocument, DocumentType, Contact RegistrationAuthorityIdentifier, Individual, LanguageIdentification, Role, Organization.
 
 
-subsubsection{Classes overview}
+\subsubsection{Classes overview}
 
+\begin{class}{Language\_Identification}
+\also
+language\_identifier : String \\
+script\_identifier : String \\
+geopolitical\_territory\_identifier : String \\
+variant\_identifier: Notation \\
+extention\_identifier : String\\
+private\_use\_qualifier: String\\
+\end{class}
 
 \begin{class}{Reference\_Document}
 \also
@@ -251,7 +274,58 @@ language : Language\_Identification \\
 notation: Notation \\
 title : Text\\
 provider: Organization\\
-url: Strin
+url: String
+\end{class}
+
+
+
+\begin{class}{Document\_Type}
+\also
+identifier : String \\
+description : Text \\
+scheme\_reference : Sign \\
+\end{class}
+
+\begin{class}{Registration\_Authority\_Identifier}
+\also
+international\_code\_designator : String \\
+organizational\_identifier : String \\
+organizational\_part\_identifier: Document\_Type \\
+OPI\_source : String \\
+\end{class}
+
+\begin{class}{Role}
+\also
+title : Sign \\
+mail\_address : Postal\_Address \\
+email\_address : String \\
+phone\_number: Phone\_Number \\
+\end{class}
+
+\begin{class}{Contact}
+\also
+individual : Individual \\
+organization : Organization \\
+role : Role \\
+\end{class}
+
+\begin{class}{Individual}
+\also
+name : Sign \\
+title : Sign \\
+mail\_address : Postal\_Address \\
+email\_address : String \\
+phone\_number: Phone\_Number \\
+role : Role \\
+\end{class}
+
+\begin{class}{Organization}
+\also
+name : String \\
+mail\_address : Postal\_Address \\
+email\_address : String \\
+phone\_number: Phone\_Number \\
+uri : String\\
 \end{class}
 
 
@@ -261,7 +335,7 @@ url: Strin
 Here the subject of how to uniquely identify a metadata item is discussed, so classes of Namespace, ScopedIdentifier, IdentifiedItem and Slot are introduced.
 
 \begin{zed}
-  [Item, ScopedId, Slot, Organization, Namespace, Name, Term, Id]
+  [Item, ScopedId, Organization, Namespace, Name, Term, Id]
 \end{zed}
 \begin{zed}
   Path == \seq Name \\
@@ -336,8 +410,13 @@ The start of the section describes a high-level set of relationships between the
 
 
 If we introduce some of these items:
+
+A \emph{Data\_Element\_Concept} class is a class which models a data element concept, which is a concept that is an \emph{association} of a property and an object class. In Z we can model an association as a relation and this states that:
+
 \begin{zed}
-[Property,  ObjectClass, dataElement, valueDomain,valueMeaning, \\ concept, conceptualDomain]
+[Property,  ObjectClass, dataElement, valueDomain, \\
+		 valueMeaning,  concept, conceptualDomain] \\
+		 dataElementConcept == Property \pfun ObjectClass\\
 \end{zed}
 We can then identify some of the relations between them:
 
@@ -360,11 +439,7 @@ A \emph{Data\_Element} is a class which models a data element, which is an atomi
 
 
 
-A \emph{Data\_Element\_Concept} class is a class which models a data element concept, which is a concept that is an \emph{association} of a property and an object class. In Z we can model an association as a relation and this states that:
 
-\begin{zed}
-dataElementConcept == Property \pfun ObjectClass\\
-\end{zed}
 \
 An \emph{Object Class} is described as being a \emph{concept} that represents a set of ideas, abstractions or things in the real world that can be identified with explicit boundaries and meaning. We interprete this is as being the same as the notion of \emph{Class} in the MBE world. It is one of the only entities which is able to collect, contain or group data elements, the other entity that is able to group elements is a Classification.
 
@@ -386,6 +461,7 @@ The specification is over 240 pages long, and this section 11 is over 15 pages s
 
 
 \newpage
+
 
 \bibliographystyle{plain}
 
